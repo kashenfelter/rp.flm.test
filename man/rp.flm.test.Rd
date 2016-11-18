@@ -66,25 +66,25 @@ beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 
 # Test all cases
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 100) #  p-value = 0.83, p-value = 0.75
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 100) #  p-value = 0.5000, p-value = 0.5889
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", B = 100) #  p-value = 0.2, p-value = <2e-16
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000) #  p-value = 0.5000, p-value = 0.5889
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", B = 1000) #  p-value = 0.2, p-value = <2e-16
 
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 100)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 100)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 100)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pc", B = 100)
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pls", B = 100)
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "basis", B = 100)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pc", B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pls", B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "basis", B = 1000)
 
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 1, B = 100)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 100)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 100)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 1, B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 \dontrun{
 # Composite hypothesis: do not reject FLM
-rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 100)
-pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 100,
+rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
+pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000,
                       plot.it = FALSE)
 rp.test
 pcvm.test
@@ -99,12 +99,12 @@ plot(density(Y), main = "Density of Y", xlab = "Y", ylab = "Density")
 rug(Y)
 
 # Simple hypothesis: do not reject beta = beta0
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 100)
-flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 100, plot.it = FALSE)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000)
+flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000, plot.it = FALSE)
 
 # Simple hypothesis: reject beta = beta0^2
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 100)
-flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 100, plot.it = FALSE)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1000)
+flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1000, plot.it = FALSE)
 
 # AEMET dataset
 
@@ -125,9 +125,9 @@ wind.speed <- wind.speed[-l]
 temp <- temp[-l]
 
 # Exploratory analysis: do not reject the FLM
-rp.aemet <- rp.flm.test(X.fdata = temp, Y = wind.speed, B = 100,
+rp.aemet <- rp.flm.test(X.fdata = temp, Y = wind.speed, B = 1000,
                         est.method = "pc")
-pcvm.aemet <- flm.test(X.fdata = temp, Y = wind.speed, B = 100,
+pcvm.aemet <- flm.test(X.fdata = temp, Y = wind.speed, B = 1000,
                        est.method = "pc", plot.it = FALSE)
 rp.aemet
 pcvm.aemet
@@ -136,9 +136,9 @@ pcvm.aemet
 plot(rp.aemet$beta.est, col = 2)
 lines(pcvm.aemet$beta.est, col = 3)
 
-# B = 1000 for more precision on the calibration: do not reject the FLM
-rp.flm.test(X.fdata = temp, Y = wind.speed, B = 1000, est.method = "pc")
-flm.test(X.fdata = temp, Y = wind.speed, B = 1000, est.method = "pc",
+# B = 5000 for more precision on the calibration: do not reject the FLM
+rp.flm.test(X.fdata = temp, Y = wind.speed, B = 5000, est.method = "pc")
+flm.test(X.fdata = temp, Y = wind.speed, B = 5000, est.method = "pc",
          plot.it = FALSE)
 
 # Simple hypothesis: rejection of beta0 = 0
@@ -158,8 +158,8 @@ x <- absorp[ind, ]
 y <- tecator$y$Fat[ind]
 
 # Exploratory analysis for composite hypothesis with automatic choose of p
-rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1000)
-pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1000,
+rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc", B = 5000)
+pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 5000,
                        plot.it = FALSE)
 rp.tecat
 pcvm.tecat
@@ -181,8 +181,8 @@ zero <- fdata(mdata = rep(0, length(x$argvals)), argvals = x$argvals,
               rangeval = x$rangeval)
 
 # Fixed p
-rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 100, p = 11)
-flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 100, p = 11)
+rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000, p = 11)
+flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000, p = 11)
 
 # Simple hypothesis, automatic election of p
 rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000)

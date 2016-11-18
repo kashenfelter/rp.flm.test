@@ -16,7 +16,7 @@ rdir.pc(n = 10, X.fdata, ncomp = 0.9, sd = TRUE)
 \item{sd}{whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.}
 }
 \value{
-An \code{\link[fda.usc]{fdata}} object with the sampled directions.
+A \code{\link[fda.usc]{fdata}} object with the sampled directions.
 }
 \description{
 Generation of random directions based on the principal components \eqn{\hat e_1,\ldots,\hat e_k}{\hat e_1,...,\hat e_k} of a sample of functional data \eqn{X_1,\ldots,X_n}{X_1,...,X_n}. The random directions are sampled as

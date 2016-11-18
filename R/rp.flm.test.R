@@ -10,7 +10,7 @@
 #' @param X.fdata an \code{\link[fda.usc]{fdata}} object used to compute the functional principal components.
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
-#' @return An \code{\link[fda.usc]{fdata}} object with the sampled directions. 
+#' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
 #' set.seed(34567)
