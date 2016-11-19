@@ -21,7 +21,7 @@
 r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
 
   # Common argvals
-  t <- seq(0, 1, l = 301)
+  t <- seq(0, 1, l = 201)
 
   # Check for delta
   if (!(delta %in% 0:3)) {
@@ -198,11 +198,10 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
 #'
 #' @description TODO
 #'
-#' @param X.fdata TODO
+#' @inheritParams rp.flm.test
 #' @param type TODO
-#' @param delta TODO
-#' @param beta0 TODO
 #' @inheritParams r.mod
+#' @param beta0 TODO
 #' @return TODO
 #' @examples
 #' mod <- r.cfs.2003(n = 100)
@@ -277,15 +276,15 @@ m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
 #' @param M TODO
 #' @return TODO
 #' @examples
-#' # Test models
-#' test.models(models = 1:12, comp = TRUE, times = TRUE)
-#' test.models(models = 1:12, comp = FALSE, times = TRUE)
+#' # Check models
+#' check.models(models = 1:12, comp = TRUE, times = TRUE)
+#' check.models(models = 1:12, comp = FALSE, times = TRUE)
 #' 
-#' # Test betas
-#' test.betas(models = 1:12, comp = TRUE)
+#' # Check betas
+#' check.betas(models = 1:12, comp = TRUE)
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-test.models <- function(models = 1:12, comp = TRUE, times = TRUE, M = 1e3) {
+check.models <- function(models = 1:12, comp = TRUE, times = TRUE, M = 1e3) {
 
   par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
 
@@ -318,9 +317,9 @@ test.models <- function(models = 1:12, comp = TRUE, times = TRUE, M = 1e3) {
 }
 
 
-#' @rdname test.models
+#' @rdname check.models
 #' @export
-test.betas <- function(models = 1:12, comp = TRUE) {
+check.betas <- function(models = 1:12, comp = TRUE) {
 
   par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
   mar <- c(3, 2.5, 2, 2.5) + 0.1

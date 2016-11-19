@@ -1,6 +1,6 @@
 
 
-#' @title fdata.cfs.2003
+#' @title cfs.2003
 #' 
 #' @description The function fdata.cfs.2003.a() generates simulated data of the functional linear linear model with
 # scalar response, Cardot, Ferraty and Sarda (2003).
@@ -17,8 +17,10 @@
 #' @examples 
 #' plot(r.cfs.2003(n = 100, type = "a")$X.fdata)
 #' @author Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}) and Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
+#' @references 
+#' # TODO
 #' @export 
-r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5) / sqrt(2), 
+r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2), 
                        type = "a") {
 
   # X.fdata
@@ -52,7 +54,7 @@ r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5) / sqrt(
 }
 
 
-#' @title fdata.hh.2006
+#' @title hh.2006
 #' 
 #' @description The function data.hh.2006 generates simulated data of the functional linear model with scalar
 # response from Hall and Housseini-Nasab (2006).  imod=1,2,3 --> model (i), model (ii), model (iii)
@@ -61,11 +63,13 @@ r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5) / sqrt(
 #' @param imod TODO
 #' @param ncb TODO
 #' @return TODO
-#' @examples 
+#' @examples
 #' plot(r.hh.2006(n = 100)$X.fdata)
 #' @author Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}) and Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
+#' @references 
+#' # TODO
 #' @export 
-r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 101), imod = 1, ncb = 20) {
+r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 201), imod = 1, ncb = 20) {
 
   # beta
   beta.fdata <- fda.usc::fdata(pi^2 * (t^2 - 1/3), argvals = t)
@@ -93,14 +97,13 @@ r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 101), imod = 1, ncb = 20) {
 #' 
 #' @description TODO
 #' 
-#' @param n TODO
-#' @param t TODO
+#' @inheritParams r.cfs.2003
 #' @param S0 TODO
 #' @return TODO
 #' @examples 
 #' plot(r.gbm(n = 100))
 #' @export
-r.gbm <- function(n = 100, t = seq(0, 1, len = 101), S0 = 1) {
+r.gbm <- function(n = 100, t = seq(0, 1, len = 201), S0 = 1) {
   
   S0 * exp(fda.usc::rproc2fdata(n = n, t = t, sigma = "brownian"))
 
@@ -120,7 +123,7 @@ r.gbm <- function(n = 100, t = seq(0, 1, len = 101), S0 = 1) {
 #' plot(r.bridge(n = 100)$X.fdata)
 #' @author Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}) and Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export 
-r.bridge <- function(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5) / sqrt(2)) {
+r.bridge <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)) {
 
   # X.fdata
   X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "brownian")
@@ -149,7 +152,7 @@ r.bridge <- function(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5) / sqrt(2)
 #' 
 #' @description TODO
 #' 
-#' @param X.fdata TODO
+#' @inheritParams rp.flm.test
 #' @param B TODO
 #' @return TODO
 #' @examples 
