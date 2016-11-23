@@ -4,7 +4,7 @@
 \alias{r.bridge}
 \title{fdata.bridge}
 \usage{
-r.bridge(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5)/sqrt(2))
+r.bridge(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2))
 }
 \arguments{
 \item{n}{TODO}

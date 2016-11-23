@@ -7,7 +7,7 @@
 m.dev(X.fdata, type, delta, beta0, comp = TRUE)
 }
 \arguments{
-\item{X.fdata}{TODO}
+\item{X.fdata}{functional observations in the class \code{\link[fda.usc]{fdata}}.}
 
 \item{type}{TODO}
 

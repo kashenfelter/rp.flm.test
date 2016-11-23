@@ -4,7 +4,7 @@
 \alias{r.gbm}
 \title{Geometric brownian motion}
 \usage{
-r.gbm(n = 100, t = seq(0, 1, len = 101), S0 = 1)
+r.gbm(n = 100, t = seq(0, 1, len = 201), S0 = 1)
 }
 \arguments{
 \item{n}{TODO}

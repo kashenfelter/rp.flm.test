@@ -2,9 +2,9 @@
 % Please edit documentation in R/models.R
 \name{r.cfs.2003}
 \alias{r.cfs.2003}
-\title{fdata.cfs.2003}
+\title{cfs.2003}
 \usage{
-r.cfs.2003(n = 100, t = seq(0, 1, len = 101), b = c(2, 4, 5)/sqrt(2),
+r.cfs.2003(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2),
   type = "a")
 }
 \arguments{
@@ -31,5 +31,8 @@ plot(r.cfs.2003(n = 100, type = "a")$X.fdata)
 }
 \author{
 Manuel Febrero-Bande (\email{manuel.febrero@usc.es}) and Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+}
+\references{
+# TODO
 }
 

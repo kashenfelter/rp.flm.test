@@ -2,9 +2,9 @@
 % Please edit documentation in R/models.R
 \name{r.hh.2006}
 \alias{r.hh.2006}
-\title{fdata.hh.2006}
+\title{hh.2006}
 \usage{
-r.hh.2006(n = 100, t = seq(0, 1, len = 101), imod = 1, ncb = 20)
+r.hh.2006(n = 100, t = seq(0, 1, len = 201), imod = 1, ncb = 20)
 }
 \arguments{
 \item{n}{TODO}
@@ -26,5 +26,8 @@ plot(r.hh.2006(n = 100)$X.fdata)
 }
 \author{
 Manuel Febrero-Bande (\email{manuel.febrero@usc.es}) and Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+}
+\references{
+# TODO
 }
 

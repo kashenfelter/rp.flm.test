@@ -7,7 +7,7 @@
 quadratic(X.fdata, B)
 }
 \arguments{
-\item{X.fdata}{TODO}
+\item{X.fdata}{functional observations in the class \code{\link[fda.usc]{fdata}}.}
 
 \item{B}{TODO}
 }

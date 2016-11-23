@@ -437,7 +437,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     # PC
     if (est.method == "pc") {
       
-      # Optimal p by SIC criterion
+      # Optimal p by SICc criterion
       if (p.data.driven) {
         
         # Method
@@ -445,7 +445,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
         # Choose the number of basis elements
         mod.pc <- fda.usc::fregre.pc.cv(fdataobj = X.fdata, y = Y, kmax = 1:pmax,
-                                        criteria = "SIC")
+                                        criteria = "SICc")
         p.opt <- length(mod.pc$pc.opt)
         ord.opt <- mod.pc$pc.opt
         
@@ -495,7 +495,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
       # PLS
     } else if (est.method == "pls") {
       
-      # Optimal p by SIC criterion
+      # Optimal p by SICc criterion
       if (p.data.driven) {
         
         # Method
@@ -503,7 +503,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
         # Choose the number of the basis: SIC is probably the best criteria
         mod.pls <- fda.usc::fregre.pls.cv(fdataobj = X.fdata, y = Y, kmax = pmax,
-                                          criteria = "SIC")
+                                          criteria = "SICc")
         p.opt <- length(mod.pls$pls.opt)
         ord.opt <- mod.pls$pls.opt
         
