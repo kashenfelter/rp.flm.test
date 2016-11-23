@@ -43,8 +43,7 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
 \value{
 An object with class \code{"htest"} whose underlying structure is a list containing the following components:
 \itemize{
-  \item{statistics.mean}{The average value of the \code{proj.statistics} with CvM and KS tests.}
-  \item{p.values.fdr}{The FDR p-values of the CvM and KS tests.}
+  \item{p.values.fdr}{A matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
   \item{proj.statistics}{A matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
   \item{boot.proj.statistics}{An array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
   \item{proj.p.values}{A matrix of size \code{c(n.proj, 2)}}
