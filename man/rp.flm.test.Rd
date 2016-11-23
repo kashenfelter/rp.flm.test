@@ -6,7 +6,7 @@
 \usage{
 rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
   pmax = 10, type.basis = "bspline", B = 5000, n.proj = 10,
-  verbose = TRUE, proj.gamma = 0.9, same.rwild = FALSE, ...)
+  verbose = TRUE, projs = 0.9, same.rwild = FALSE, ...)
 }
 \arguments{
 \item{X.fdata}{functional observations in the class \code{\link[fda.usc]{fdata}}.}
@@ -17,14 +17,14 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
 
 \item{est.method}{estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 \itemize{
-  \item \code{"pc"} if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.
-  \item \code{"pls"} if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.
-  \item \code{"basis"} if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.
+  \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.}
+  \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.}
+  \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 }}
 
 \item{p}{number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.}
 
-\item{pmax}{TODO}
+\item{pmax}{maximum size of the basis expansion to consider in \code{\link{fregre.pc.cv}}, \code{\link{fregre.pls.cv}} and \code{\link{fregre.basis.cv}} for the optimal estimation of \eqn{\beta}{\beta}.}
 
 \item{type.basis}{type of basis if \code{est.method = "basis"}.}
 
@@ -34,14 +34,29 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
 
 \item{verbose}{whether to show or not information about the testing progress.}
 
-\item{proj.gamma}{TODO}
+\item{projs}{a \code{\link[fda.usc]{fdata}} object containing the random directions employed to project \code{X.fdata}. If numeric, the convenient value for \code{ncomp} in \code{\link{rdir.pc}}.}
 
-\item{same.rwild}{employ the same bootstrap residuals for the}
+\item{same.rwild}{wether to employ the same wild bootstrap residuals for different projections or not.}
 
 \item{...}{further arguments passed to \code{\link[fda]{create.basis}} (not \code{rangeval} that is taken as the \code{rangeval} of \code{X.fdata}).}
 }
 \value{
-TODO
+An object with class \code{"htest"} whose underlying structure is a list containing the following components:
+\itemize{
+  \item{statistics.mean}{The average value of the \code{proj.statistics} with CvM and KS tests.}
+  \item{p.values.fdr}{The FDR p-values of the CvM and KS tests.}
+  \item{proj.statistics}{A matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
+  \item{boot.proj.statistics}{An array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
+  \item{proj.p.values}{A matrix of size \code{c(n.proj, 2)}}
+  \item{method}{Information about the test performed and the kind of estimation performed.}
+  \item{B}{Number of bootstrap replicates used.}
+  \item{n.proj}{Number of projections considered.}
+  \item{projs}{Random directions employed to project \code{X.fdata}.}
+  \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
+  \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
+  \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+  \item{data.name}{The character string "Y = <X, b> + e"}
+}
 }
 \description{
 Tests the composite null hypothesis of a Functional Linear Model with scalar response (FLM),
@@ -49,9 +64,6 @@ Tests the composite null hypothesis of a Functional Linear Model with scalar res
 If \eqn{\beta=\beta_0}{\beta=\beta0} is provided, then the simple hypothesis \eqn{H_0:\,Y=\langle X,\beta_0\rangle+\epsilon}{H_0: Y=<X,\beta0>+\epsilon} is tested. The way of testing the null hypothesis is via a norm (Cramer-von Mises or Kolmogorov-Smirnov) in the empirical process indexed by the projections.
 }
 \details{
-TODO
-}
-\note{
 No NA's are allowed neither in the functional covariate nor in the scalar response.
 }
 \examples{

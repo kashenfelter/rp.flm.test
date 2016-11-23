@@ -108,8 +108,8 @@ rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, sd = TRUE) {
 #' @param F.code whether to use faster \code{FORTRAN} code or \code{R} code.
 #' @return A list containing:
 #' \itemize{
-#' \item \code{statistic} a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.
-#' \item \code{proj.X.ord} the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.
+#'   \item{statistic}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
+#'   \item{proj.X.ord}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
 #' }
 #' @details \code{NA}'s are not allowed neither in the functional covariate nor in the scalar response.
 #' @examples
@@ -236,22 +236,36 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @param beta0.fdata functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.
 #' @param est.method estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 #' \itemize{
-#'   \item \code{"pc"} if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.
-#'   \item \code{"pls"} if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.
-#'   \item \code{"basis"} if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.
+#'   \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.}
+#'   \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.}
+#'   \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 #' }
 #' @param p number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.
-#' @param pmax TODO
+#' @param pmax maximum size of the basis expansion to consider in \code{\link{fregre.pc.cv}}, \code{\link{fregre.pls.cv}} and \code{\link{fregre.basis.cv}} for the optimal estimation of \eqn{\beta}{\beta}.
 #' @param type.basis type of basis if \code{est.method = "basis"}.
 #' @param B number of bootstrap replicates to calibrate the distribution of the test statistic.
 #' @param n.proj vector with the number of projections to consider.
 #' @param verbose whether to show or not information about the testing progress.
-#' @param proj.gamma TODO
-#' @param same.rwild employ the same bootstrap residuals for the
+#' @param projs a \code{\link[fda.usc]{fdata}} object containing the random directions employed to project \code{X.fdata}. If numeric, the convenient value for \code{ncomp} in \code{\link{rdir.pc}}.
+#' @param same.rwild wether to employ the same wild bootstrap residuals for different projections or not.
 #' @param ... further arguments passed to \code{\link[fda]{create.basis}} (not \code{rangeval} that is taken as the \code{rangeval} of \code{X.fdata}).
-#' @return TODO
-#' @details TODO
-#' @note
+#' @return An object with class \code{"htest"} whose underlying structure is a list containing the following components:
+#' \itemize{
+#'   \item{statistics.mean}{The average value of the \code{proj.statistics} with CvM and KS tests.}
+#'   \item{p.values.fdr}{The FDR p-values of the CvM and KS tests.}
+#'   \item{proj.statistics}{A matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
+#'   \item{boot.proj.statistics}{An array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
+#'   \item{proj.p.values}{A matrix of size \code{c(n.proj, 2)}}
+#'   \item{method}{Information about the test performed and the kind of estimation performed.}
+#'   \item{B}{Number of bootstrap replicates used.}
+#'   \item{n.proj}{Number of projections considered.}
+#'   \item{projs}{Random directions employed to project \code{X.fdata}.}
+#'   \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
+#'   \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
+#'   \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+#'   \item{data.name}{The character string "Y = <X, b> + e"}
+#' }
+#' @details
 #' No NA's are allowed neither in the functional covariate nor in the scalar response.
 #' @examples
 #' # Simulated example
@@ -394,7 +408,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @export
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                         p = NULL, pmax = 10, type.basis = "bspline", B = 5000,
-                        n.proj = 10, verbose = TRUE, proj.gamma = 0.9,
+                        n.proj = 10, verbose = TRUE, projs = 0.9,
                         same.rwild = FALSE, ...) {
   
   # Sample size
@@ -464,7 +478,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         # Compute the residuals
         e <- mod.pc$fregre.pc$residuals
         
-        # Fixed p
+      # Fixed p
       } else {
         
         # Method
@@ -492,7 +506,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
       }
       
-      # PLS
+    # PLS
     } else if (est.method == "pls") {
       
       # Optimal p by SICc criterion
@@ -522,7 +536,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         # Compute the residuals
         e <- mod.pls$fregre.pls$residuals
         
-        # Fixed p
+      # Fixed p
       } else {
         
         # Method
@@ -550,7 +564,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
       }
       
-      # Deterministic basis
+    # Deterministic basis
     } else if (est.method == "basis") {
       
       # Optimal p by GCV criterion
@@ -577,7 +591,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         # Compute the residuals
         e <- mod.basis$residuals
         
-        # Fixed p
+      # Fixed p
       } else {
         
         # Method
@@ -611,7 +625,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
       
     }
     
-    # Simple hypothesis
+  # Simple hypothesis
   } else {
     
     # Method
@@ -634,15 +648,14 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     cat("Done.\nComputing projections... ")
     
   }
-  if (is.numeric(proj.gamma)) {
+  if (is.numeric(projs)) {
     
-    proj.gamma <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = proj.gamma,
-                          sd = TRUE)
+    projs <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = projs, sd = TRUE)
     
   }
   
   # Compute projections for the statistic and the bootstrap replicates
-  proj.X <- fda.usc::inprod.fdata(X.fdata, proj.gamma) # A matrix n x n.proj
+  proj.X <- fda.usc::inprod.fdata(X.fdata, projs) # A matrix n x n.proj
   
   # Statistic
   rp.stat <- rp.flm.statistic(proj.X = proj.X, residuals = e, F.code = TRUE)
@@ -674,7 +687,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                          mod.pc$lm$x,
                          mod.pc$fregre.pc$lm$x)
       
-      # PLS
+    # PLS
     } else if (est.method == "pls") {
       
       # Design matrix for the PLS estimation
@@ -682,7 +695,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                          mod.pls$lm$x,
                          mod.pls$fregre.pls$lm$x)
       
-      # Deterministic basis
+    # Deterministic basis
     } else if (est.method == "basis") {
       
       # Design matrix for the basis estimation
@@ -730,7 +743,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
       
     }
     
-    # Simple hypothesis
+  # Simple hypothesis
   } else {
     
     # Bootstrap resampling
@@ -795,12 +808,15 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     cat("\nDone.\n")
     
   }
-  result <- structure(list(statistic = NULL, statistics = rp.stat$statistic,
-                           boot.statistics = rp.stat.star, p.values = rp.pvalue,
+  options(warn = -1)
+  result <- structure(list(statistics.mean = colMeans(rp.stat$statistic),
+                           p.values.fdr = rp.pvalue,
+                           proj.statistics = rp.stat$statistic,
+                           boot.proj.statistics = rp.stat.star,
                            proj.p.values = pval, method = meth, B = B,
-                           n.proj = vec.nproj, type.basis = type.basis,
-                           beta.est = beta.est, p = p.opt,
-                           data.name = "Y = <X, b> + e"))
+                           n.proj = vec.nproj, projs = projs,
+                           type.basis = type.basis, beta.est = beta.est, 
+                           p = p.opt, data.name = "Y = <X, b> + e"))
   class(result) <- "htest"
   return(result)
   

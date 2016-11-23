@@ -2,37 +2,46 @@
 % Please edit documentation in R/scenarios.R
 \name{m.dev}
 \alias{m.dev}
-\title{Deviations from the composite hypothesis}
+\title{Deviations from functional linearity}
 \usage{
-m.dev(X.fdata, type, delta, beta0, comp = TRUE)
+m.dev(X.fdata, type, delta, eta, composite = TRUE)
 }
 \arguments{
 \item{X.fdata}{functional observations in the class \code{\link[fda.usc]{fdata}}.}
 
-\item{type}{TODO}
+\item{type}{kind of deviation, an index from \code{1} to \code{5}.}
 
-\item{delta}{TODO}
+\item{delta}{an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.}
 
-\item{beta0}{TODO}
+\item{eta}{functional parameter employed when \code{type = 4}.}
 
-\item{comp}{TODO}
+\item{composite}{flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).}
 }
 \value{
-TODO
+A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
 }
 \description{
-TODO
+Deviations fromfunctional linearity considered in the simulation study of Cuesta-Albertos et al. (2016).
+}
+\details{
+The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
 }
 \examples{
+dev <- list()
+k <- 1
 mod <- r.cfs.2003(n = 100)
 for (i in 1:5) {
   for (delta in 0:3) {
-    dev <- m.dev(X.fdata = mod$X.fdata, type = i, beta0 = mod$beta.fdata, 
-                 delta = delta, comp = TRUE)
+    dev[[k]] <- m.dev(X.fdata = mod$X.fdata, type = i, eta = mod$beta.fdata,
+                      delta = delta, composite = TRUE)
+    k <- k + 1
   }
 }
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+}
+\references{
+Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 }
 

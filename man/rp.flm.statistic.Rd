@@ -18,8 +18,8 @@ rp.flm.statistic(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE)
 \value{
 A list containing:
 \itemize{
-\item \code{statistic} a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.
-\item \code{proj.X.ord} the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.
+  \item{statistic}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
+  \item{proj.X.ord}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
 }
 }
 \description{

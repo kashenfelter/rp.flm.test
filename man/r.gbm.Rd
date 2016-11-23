@@ -7,19 +7,25 @@
 r.gbm(n = 100, t = seq(0, 1, len = 201), S0 = 1)
 }
 \arguments{
-\item{n}{TODO}
+\item{n}{sample size.}
 
-\item{t}{TODO}
+\item{t}{locations where the functional data is observed.}
 
-\item{S0}{TODO}
+\item{S0}{initial value of the geometric brownian motion.}
 }
 \value{
-TODO
+Functional sample, an \code{\link[fda.usc]{fdata}} object of length \code{n}.
 }
 \description{
-TODO
+Sampling of paths of the geometric brownian motion.
+}
+\details{
+The absolute value of the process will be always larger or equal to the absolute value of \code{S0}.
 }
 \examples{
-plot(r.gbm(n = 100))
+plot(r.gbm(n = 100, S0 = rnorm(100)))
+}
+\author{
+Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
 }
 

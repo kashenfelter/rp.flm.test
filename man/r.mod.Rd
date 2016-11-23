@@ -4,33 +4,50 @@
 \alias{r.mod}
 \title{Functional regression models for simple and composite hypothesis}
 \usage{
-r.mod(n, model, delta, R2 = 0.95, comp = TRUE)
+r.mod(n, scenario, delta, R2 = 0.95, composite = TRUE)
 }
 \arguments{
-\item{n}{TODO}
+\item{n}{the sample size.}
 
-\item{model}{TODO}
+\item{scenario}{an index from \code{1} to \code{12} denoting the simulation scenario.}
 
-\item{delta}{TODO}
+\item{delta}{an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.}
 
-\item{R2}{TODO}
+\item{R2}{proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\varepsilon} of the regression model.}
 
-\item{comp}{TODO}
+\item{composite}{flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).}
 }
 \value{
-TODO
+A list with the following elements:
+\itemize{
+  \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
+  \item{Y}{the scalar responses, a vector of length \code{n}.}
+  \item{beta.fdata}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
+}
 }
 \description{
-TODO
+Sampling from the functional linear models considered in the simulation study of Cuesta-Albertos et al. (2016).
+}
+\details{
+The samples are generated from the regression model
+\deqn{Y = \langle \mathcal{X}, \beta\rangle + \delta m(\mathcal{X})+\varepsilon,}{Y = <X, \beta> + \delta m(X)+\varepsilon,}
+where \eqn{\delta m(\mathcal{X})}{\delta m(X)} is computed by \code{\link{m.dev}}. The description of the scenarios is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
 }
 \examples{
+# Generate samples for all scenarios
+samp <- list()
+k <- 1
 for (i in 1:12) {
   for (delta in 0:3) {
-    samp <- r.mod(n = 10, model = i, delta = delta, R2 = 0.95, comp = TRUE)
+    samp[[k]] <- r.mod(n = 10, scenario = i, delta = delta, R2 = 0.95, composite = TRUE)
+    k <- k + 1
   }
 }
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+}
+\references{
+Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 }
 

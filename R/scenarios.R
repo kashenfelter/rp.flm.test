@@ -2,23 +2,37 @@
 
 #' @title Functional regression models for simple and composite hypothesis
 #'
-#' @description TODO
+#' @description Sampling from the functional linear models considered in the simulation study of Cuesta-Albertos et al. (2016).
 #'
-#' @param n TODO
-#' @param model TODO
-#' @param delta TODO
-#' @param R2 TODO
-#' @param comp TODO
-#' @return TODO
+#' @param n the sample size.
+#' @param scenario an index from \code{1} to \code{12} denoting the simulation scenario.
+#' @param delta an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.
+#' @param R2 proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\varepsilon} of the regression model.
+#' @param composite flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).
+#' @return A list with the following elements:
+#' \itemize{
+#'   \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
+#'   \item{Y}{the scalar responses, a vector of length \code{n}.}
+#'   \item{beta.fdata}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
+#' }
+#' @details The samples are generated from the regression model
+#' \deqn{Y = \langle \mathcal{X}, \beta\rangle + \delta m(\mathcal{X})+\varepsilon,}{Y = <X, \beta> + \delta m(X)+\varepsilon,}
+#' where \eqn{\delta m(\mathcal{X})}{\delta m(X)} is computed by \code{\link{m.dev}}. The description of the scenarios is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
 #' @examples
+#' # Generate samples for all scenarios
+#' samp <- list()
+#' k <- 1
 #' for (i in 1:12) {
 #'   for (delta in 0:3) {
-#'     samp <- r.mod(n = 10, model = i, delta = delta, R2 = 0.95, comp = TRUE)
+#'     samp[[k]] <- r.mod(n = 10, scenario = i, delta = delta, R2 = 0.95, composite = TRUE)
+#'     k <- k + 1
 #'   }
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
+#' @references
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' @export
-r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
+r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
 
   # Common argvals
   t <- seq(0, 1, l = 201)
@@ -31,7 +45,7 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
   }
 
   # Different models with deviations
-  if (model == 1) {
+  if (scenario == 1) {
 
     # M1: example (a) of CFS 2003c, R2 = 0.95, three PC (1, 2, 3)
     b <- c(2, 4, 5) / sqrt(2)
@@ -42,7 +56,7 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 1, delta = c(0, 0.25, 0.75, 1.25)[delta + 1])
 
-  } else if (model == 2) {
+  } else if (scenario == 2) {
 
     # M2: example (a) of CFS 2003c, R2 = 0.95, three PC (3, 5, 7)
     b <- c(0, 0, 2, 0, 4, 0, 5) / sqrt(2)
@@ -53,28 +67,28 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 1, delta = c(0, 0.05, 0.2, 0.5)[delta + 1])
 
-  } else if (model == 3) {
+  } else if (scenario == 3) {
 
     # M3: example (a) of CFS 2003c, R2 = 0.95, three PC (2, 3, 7)
     b <- c(0, 2, 4, 0, 0, 0, 5) / sqrt(2)
     cfs <- r.cfs.2003(n = n, t = t, b = b, type = "a")
     X.fdata <- cfs$X.fdata
     beta0 <- cfs$beta.fdata
-    
+
     # Deviations
     mdev <- m.dev(X.fdata, type = 1, delta = -c(0, 0.2, 0.5, 1)[delta + 1])
 
-  } else if (model == 4) {
+  } else if (scenario == 4) {
 
     # M4: example b of CFS 2003, beta = log(15 * t^2 + 10) + cos(4 * pi * t)
     cfs <- r.cfs.2003(n = n, t = t, type = "b")
     X.fdata <- cfs$X.fdata
     beta0 <- cfs$beta.fdata
-    
+
     # Deviations
     mdev <- m.dev(X.fdata, type = 1, delta = c(0, 0.2, 1, 2)[delta + 1])
 
-  } else if (model == 5) {
+  } else if (scenario == 5) {
 
     # M5: example Hall and Hoseini, imod = 1
     hh <- r.hh.2006(n = n, t = t, imod = 1)
@@ -84,46 +98,46 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 2, delta = -c(0, 1, 3, 7)[delta + 1])
 
-  } else if (model == 6) {
+  } else if (scenario == 6) {
 
     # M6: example Hall & Hoseini, imod = 2
     hh <- r.hh.2006(n = n, t = t, imod = 2)
     X.fdata <- hh$X.fdata
     beta0 <- hh$beta.fdata
-    
+
     # Deviations
     mdev <- m.dev(X.fdata, type = 2, delta = -c(0, 1, 3, 7)[delta + 1])
 
-  } else if (model == 7) {
+  } else if (scenario == 7) {
 
     # M7: brownian bridge with exact representation in the three first PC, R2 = 0.95
     bridge <- r.bridge(n = n, t = t, b = c(2, 4, 5) / sqrt(2))
     X.fdata <- bridge$X.fdata
     beta0 <- bridge$beta.fdata
-    
+
     # Deviations
     mdev <- m.dev(X.fdata, type = 2, delta = -c(0, 2, 7.5, 15)[delta + 1])
 
-  } else if (model == 8) {
+  } else if (scenario == 8) {
 
     # M8: Ornstein-Uhlenbeck and quadratic deviation I as in G-P, F-B and G-M (2014)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
-    beta0 <- fda.usc::fdata(mdata = sin(2 * pi * t) - cos(2 * pi * t), 
+    beta0 <- fda.usc::fdata(mdata = sin(2 * pi * t) - cos(2 * pi * t),
                             argvals = t)
 
     # Deviations
     mdev <- m.dev(X.fdata, type = 2, delta = -c(0, 0.25, 1, 2)[delta + 1])
 
-  } else if (model == 9) {
+  } else if (scenario == 9) {
 
     # M9: Ornstein-Uhlenbeck and quadratic deviation II as in G-P, F-B and G-M (2014)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
     beta0 <- fda.usc::fdata(mdata = t - (t - 0.75)^2, argvals = t)
-    
+
     # Deviations
     mdev <- m.dev(X.fdata, type = 3, delta = -c(0, 0.01, 0.1, 0.3)[delta + 1])
 
-  } else if (model == 10) {
+  } else if (scenario == 10) {
 
     # M10: Ornstein-Uhlenbeck and quadratic deviation III as in G-P, F-B and G-M (2014)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
@@ -132,7 +146,7 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 3, delta = c(0, 0.01, 0.05, 0.25)[delta + 1])
 
-  } else if (model == 11) {
+  } else if (scenario == 11) {
 
     # M11: geometrical brownian motion I
     X.fdata <- r.gbm(n = n, t = t, S0 = 1)
@@ -141,7 +155,7 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 3, delta = c(0, 0.5, 2, 5)[delta + 1])
 
-  } else if (model == 12) {
+  } else if (scenario == 12) {
 
     # M12: geometrical brownian motion II
     X.fdata <- r.gbm(n = n, t = t, S0 = 2)
@@ -150,7 +164,7 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
     # Deviations
     mdev <- m.dev(X.fdata, type = 3, delta = c(0, 0.5, 2.5, 7)[delta + 1])
 
-  } else if (model == 13) {
+  } else if (scenario == 13) {
 
     # Toy example (Edu)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
@@ -158,16 +172,16 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
 
       X.fdata$data[i, ] <- rnorm(1, mean = 0, sd = 2) * exp(-t) +
         rnorm(1, mean = 1, sd = 1) * exp(t) +
-        rnorm(1, mean = -1, sd = 0.1) * exp(2 * t)  
+        rnorm(1, mean = -1, sd = 0.1) * exp(2 * t)
 
     }
-    beta0 <- fda.usc::fdata(mdata = 1 - 10 * exp(-t) - 5 * exp(t) + 3 * exp(2 * t), 
+    beta0 <- fda.usc::fdata(mdata = 1 - 10 * exp(-t) - 5 * exp(t) + 3 * exp(2 * t),
                             argvals = t)
 
     # Deviations
     mdev <- m.dev(X.fdata, type = 2, delta = -c(0, 0.25, 1, 2)[delta + 1])
-    
-  } else if (model == 14) {
+
+  } else if (scenario == 14) {
 
     # Toy example (Manolo)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "vexponential")
@@ -181,44 +195,50 @@ r.mod <- function(n, model, delta, R2 = 0.95, comp = TRUE) {
   } else {
 
     stop("model must be from 1 to 14")
-    
+
   }
 
   # Response
   Y <- drop(fda.usc::inprod.fdata(X.fdata, beta0))
   noise <- rnorm(n, mean = 0, sd = sqrt(var(Y) * (1/ R2 - 1)))
-  Y <- switch(comp + 1, 0, Y) + noise + mdev
-  
+  Y <- switch(composite + 1, 0, Y) + noise + mdev
+
   return(list(X.fdata = X.fdata, Y = Y, beta.fdata = beta0))
 
 }
 
 
-#' @title Deviations from the composite hypothesis
+#' @title Deviations from functional linearity
 #'
-#' @description TODO
+#' @description Deviations fromfunctional linearity considered in the simulation study of Cuesta-Albertos et al. (2016).
 #'
 #' @inheritParams rp.flm.test
-#' @param type TODO
+#' @param type kind of deviation, an index from \code{1} to \code{5}.
 #' @inheritParams r.mod
-#' @param beta0 TODO
-#' @return TODO
+#' @param eta functional parameter employed when \code{type = 4}.
+#' @return A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
+#' @details The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
 #' @examples
+#' dev <- list()
+#' k <- 1
 #' mod <- r.cfs.2003(n = 100)
 #' for (i in 1:5) {
 #'   for (delta in 0:3) {
-#'     dev <- m.dev(X.fdata = mod$X.fdata, type = i, beta0 = mod$beta.fdata, 
-#'                  delta = delta, comp = TRUE)
+#'     dev[[k]] <- m.dev(X.fdata = mod$X.fdata, type = i, eta = mod$beta.fdata,
+#'                       delta = delta, composite = TRUE)
+#'     k <- k + 1
 #'   }
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
+#' @references
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' @export
-m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
+m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 
   if (delta == 0) {
-    
+
     return(rep(0, length(X.fdata)))
-  
+
   } else {
 
     if (type == 1) {
@@ -229,10 +249,9 @@ m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
     } else if (type == 2) {
 
       # Quadratic model
-      B <- outer(fda.usc::argvals(X.fdata), fda.usc::argvals(X.fdata), function(s, t) {
-        sin(2 * pi * t * s) * s * (1 - s) * t * (1 - t)
-      }) * 25
-      Y <- quadratic(X.fdata = X.fdata, B = B)
+      B <- 25 * outer(fda.usc::argvals(X.fdata), fda.usc::argvals(X.fdata), 
+                 function(s, t) sin(2 * pi * t * s) * s * (1 - s) * t * (1 - t))
+      Y <- diag(X.fdata$data %*% B %*% t(X.fdata$data)) * diff(X.fdata$argvals[1:2])^2
 
     } else if (type == 3) {
 
@@ -244,7 +263,6 @@ m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
     } else if (type == 4) {
 
       # Non-linear transformation of the interior product
-      eta <- beta0
       xx <- drop(fda.usc::inprod.fdata(X.fdata, eta))
       Y <- xx * log(xx^2)
 
@@ -258,7 +276,7 @@ m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
       stop("type must be 1, 2, 3, 4 or 5")
 
     }
-    
+
     return(delta * Y)
 
   }
@@ -266,41 +284,45 @@ m.dev <- function(X.fdata, type, delta, beta0, comp = TRUE) {
 }
 
 
-#' @title Check density of the responses and betas and functional process
+#' @title Check density of the responses and functional processes
 #'
-#' @description TODO
+#' @description \code{check.scenarios} produces plots displaying th densities of the response for different deviations. \code{check.betas} displays a sample of the functional process, the functional coefficient associated and its estimation based on 100 observations.
 #'
-#' @param models TODO
 #' @inheritParams r.mod
-#' @param times TODO
-#' @param M TODO
-#' @return TODO
+#' @param scenarios a vector giving the simulation scenarios to be checked.
+#' @param times flag to indicate whether to show the time employed computing each model.
+#' @param M number of samples employed to estimate the densities of the response.
+#' @param est.beta flag to indicate whether to plot the functional coefficient estimate.
+#' @return Nothing. The functions are called for producing diagnostic plots.
 #' @examples
-#' # Check models
-#' check.models(models = 1:12, comp = TRUE, times = TRUE)
-#' check.models(models = 1:12, comp = FALSE, times = TRUE)
-#' 
+#' # Check scenarios and deviations
+#' check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE)
+#'
 #' # Check betas
-#' check.betas(models = 1:12, comp = TRUE)
+#' check.betas(scenarios = 1:12, composite = TRUE)
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-check.models <- function(models = 1:12, comp = TRUE, times = TRUE, M = 1e3) {
+check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, M = 1e3) {
 
   par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
 
-  for (k in models) {
+  for (k in scenarios) {
 
     # Response densities
     t <- proc.time()[3]
     set.seed(12456789)
-    d0 <- density(r.mod(n = M, model = k, delta = 0, comp = comp)$Y, bw = "SJ")
+    d0 <- density(r.mod(n = M, scenario = k, delta = 0, composite = composite)$Y, bw = "SJ")
     set.seed(12456789)
-    d1 <- density(r.mod(n = M, model = k, delta = 1, comp = comp)$Y, bw = "SJ")
+    d1 <- density(r.mod(n = M, scenario = k, delta = 1, composite = composite)$Y, bw = "SJ")
     set.seed(12456789)
-    d2 <- density(r.mod(n = M, model = k, delta = 2, comp = comp)$Y, bw = "SJ")
+    d2 <- density(r.mod(n = M, scenario = k, delta = 2, composite = composite)$Y, bw = "SJ")
     set.seed(12456789)
-    cat("Model", k, "finish in", proc.time()[3] - t, "secs\n")
+    if (times) {
+      
+      cat("Model", k, "finished in", proc.time()[3] - t, "secs\n")
 
+    }
+    
     # Plot
     plot(d0, type = "l", lwd = 2, main = paste("Model", k), xlab = "", ylab = "",
          ylim = c(0, max(d0$y, d1$y, d2$y) * 1.2))
@@ -317,15 +339,33 @@ check.models <- function(models = 1:12, comp = TRUE, times = TRUE, M = 1e3) {
 }
 
 
-#' @rdname check.models
+#' @rdname check.scenarios
 #' @export
-check.betas <- function(models = 1:12, comp = TRUE) {
+check.betas <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
+                        est.beta = TRUE) {
 
-  par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
   mar <- c(3, 2.5, 2, 2.5) + 0.1
-  for (k in models) {
+  par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
+  for (k in scenarios) {
 
-    samp <- r.mod(n = 20, model = k, delta = 0, comp = comp)
+    # Sample
+    t <- proc.time()[3]
+    samp <- r.mod(n = 100, scenario = k, delta = 0, composite = composite)
+
+    # Estimate beta from 100 samples
+    if (est.beta) {
+      
+      beta.est <- fda.usc::fregre.pc.cv(fdataobj = samp$X.fdata, y = samp$Y, 
+                                        kmax = 10, criteria = "SICc")$fregre.pc$beta.est
+      
+    }
+    if (times) {
+      
+      cat("Model", k, "finished in", proc.time()[3] - t, "secs\n")
+      
+    }
+    
+    # Create two axis plot
     lylim <- range(samp$beta.fdata$data) + c(-1, 1)
     rylim <- range(samp$X.fdata$data) + c(-1, 1)
     plotrix::twoord.plot(lx = samp$X.fdata$argvals, ly = samp$beta.fdata$data,
@@ -333,11 +373,21 @@ check.betas <- function(models = 1:12, comp = TRUE) {
                          xlab = "", rylab = "", ylab = "", lylim = lylim,
                          rylim = rylim, type = "n", lcol = 1, rcol = gray(0.5),
                          mar = mar)
+
+    # Theoretical beta
     lines(samp$beta.fdata, ylim = lylim, lwd = 2, col = 1)
 
+    # Plot beta estimate
+    if (est.beta) {
+      
+      lines(beta.est, ylim = lylim, lwd = 2, col = 2)
+
+    }
+    
+    # Add functional data
     for (i in 1:20) {
 
-      lines(diff(lylim)/diff(rylim) * (samp$X.fdata[i, ] - rylim[1]) + lylim[1],
+      lines(diff(lylim) / diff(rylim) * (samp$X.fdata[i, ] - rylim[1]) + lylim[1],
             col = gray(0.5))
 
     }
