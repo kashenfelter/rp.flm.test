@@ -435,6 +435,9 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     
   }
   
+  # Truncate maximum basis expansion
+  pmax <- min(pmax, n)
+  
   ## Estimation of beta
   
   # Composite hypothesis: optimal estimation of beta and the basis expansion

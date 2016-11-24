@@ -4,27 +4,25 @@
 \alias{r.bridge}
 \alias{r.cfs.2003}
 \alias{r.hh.2006}
-\title{Functional covariates and coefficients for functional linear models}
+\title{Utilities for the simulation of functional linear models}
 \usage{
 r.cfs.2003(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2),
   type = c("a", "b")[1])
 
-r.hh.2006(n = 100, t = seq(0, 1, len = 201), imod = 1, ncb = 20)
+r.hh.2006(n = 100, t = seq(0, 1, len = 201), imod = 1)
 
 r.bridge(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2))
 }
 \arguments{
-\item{n}{sample size.}
+\item{n}{number of functions to sample.}
 
-\item{t}{locations where the functional data is observed.}
+\item{t}{time locations for the functional data.}
 
-\item{b}{coefficients of the functional coefficient in the theoretical basis of principal components of the brownian motion.}
+\item{b}{coefficients of the functional coefficient in the theoretical basis of principal components of the Brownian motion.}
 
 \item{type}{either example \code{"a"} or \code{"b"} from Cardot et al. (2003).}
 
 \item{imod}{either \code{1}, \code{2} or \code{3} for denoting models (i), (ii) and (iii) in Hall and Hosseini-Nasab (2006).}
-
-\item{ncb}{size of basis expansion used in Hall and Hosseini-Nasab (2006) for simulating the functional process.}
 }
 \value{
 A list with the following elements:
@@ -36,9 +34,9 @@ A list with the following elements:
 \description{
 The functions \code{r.cfs.2003}, \code{r.hh.2006} and \code{r.bridge} sample the functional covariate and construct functional coefficients for their use in functional linear models:
 \itemize{
-  \item{r.cfs.2003}{implements examples (a) and (b) in Cardot et al. (2003).}
-  \item{r.hh.2006}{gives models (i), (ii) and (iii) in Hall and Housseini-Nasab (2006).}
-  \item{r.bridge}{samples a brownian motion and creates a functional coefficient made of the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
+  \item{r.cfs.2003}{implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
+  \item{r.hh.2006}{gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
+  \item{r.bridge}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
 }
 }
 \examples{

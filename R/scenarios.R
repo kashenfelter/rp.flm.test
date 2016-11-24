@@ -121,7 +121,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   } else if (scenario == 8) {
 
     # M8: Ornstein-Uhlenbeck and quadratic deviation I as in G-P, F-B and G-M (2014)
-    X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
+    X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = sin(2 * pi * t) - cos(2 * pi * t),
                             argvals = t)
 
@@ -131,7 +131,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   } else if (scenario == 9) {
 
     # M9: Ornstein-Uhlenbeck and quadratic deviation II as in G-P, F-B and G-M (2014)
-    X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
+    X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = t - (t - 0.75)^2, argvals = t)
 
     # Deviations
@@ -140,7 +140,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   } else if (scenario == 10) {
 
     # M10: Ornstein-Uhlenbeck and quadratic deviation III as in G-P, F-B and G-M (2014)
-    X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
+    X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = t + cos(2 * pi * t), argvals = t)
 
     # Deviations
@@ -149,7 +149,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   } else if (scenario == 11) {
 
     # M11: geometrical brownian motion I
-    X.fdata <- r.gbm(n = n, t = t, S0 = 1)
+    X.fdata <- r.gbm(n = n, t = t, s0 = 1)
     beta0 <- fda.usc::fdata(log(15 * t^2 + 10) + cos(4 * pi * t), argvals = t)
 
     # Deviations
@@ -158,7 +158,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   } else if (scenario == 12) {
 
     # M12: geometrical brownian motion II
-    X.fdata <- r.gbm(n = n, t = t, S0 = 2)
+    X.fdata <- r.gbm(n = n, t = t, s0 = 2)
     beta0 <- fda.usc::fdata(pi^2 * (t^2 - 1/3), argvals = t)
 
     # Deviations

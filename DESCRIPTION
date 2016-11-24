@@ -11,8 +11,9 @@ Depends:
     R (>= 3.1.0),
     fda,
     fda.usc,
+    mvtnorm,
     plotrix
-Description: Goodness-of-fit test for the functional linear model with scalar response based on random projections. The package implements the methoddescribed in Cuesta-Albertos et al. (2016).
+Description: Goodness-of-fit test for the functional linear model with scalar response based on random projections. The package implements the method described in Cuesta-Albertos et al. (2016).
 License: GPL-3
 BugReports: https://github.com/egarpor/rp.flm.test (preferably) or email.
 RoxygenNote: 5.0.1

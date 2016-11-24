@@ -2,28 +2,28 @@
 % Please edit documentation in R/models.R
 \name{r.gbm}
 \alias{r.gbm}
-\title{Geometric brownian motion}
+\title{Geometric Brownian motion}
 \usage{
-r.gbm(n = 100, t = seq(0, 1, len = 201), S0 = 1)
+r.gbm(n = 100, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1)
 }
 \arguments{
-\item{n}{sample size.}
+\item{n}{number of functions to sample.}
 
-\item{t}{locations where the functional data is observed.}
+\item{t}{time locations for the functional data.}
 
-\item{S0}{initial value of the geometric brownian motion.}
+\item{mu, sigma}{mean and diffusion of the underlying Brownian motion.}
+
+\item{s0}{a number or a vector of length \code{n} giving the initial value(s) of the geometric Brownian motion.}
 }
 \value{
 Functional sample, an \code{\link[fda.usc]{fdata}} object of length \code{n}.
 }
 \description{
-Sampling of paths of the geometric brownian motion.
-}
-\details{
-The absolute value of the process will be always larger or equal to the absolute value of \code{S0}.
+Sampling of paths of the geometric Brownian motion.
 }
 \examples{
-plot(r.gbm(n = 100, S0 = rnorm(100)))
+plot(r.gbm(n = 10, s0 = 1))
+plot(r.gbm(n = 10, mu = -1, s0 = rnorm(10, mean = 10)))
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).

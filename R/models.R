@@ -1,19 +1,18 @@
 
 
-#' @title Functional covariates and coefficients for functional linear models
+#' @title Utilities for the simulation of functional linear models
 #' 
 #' @description The functions \code{r.cfs.2003}, \code{r.hh.2006} and \code{r.bridge} sample the functional covariate and construct functional coefficients for their use in functional linear models:
 #' \itemize{
-#'   \item{r.cfs.2003}{implements examples (a) and (b) in Cardot et al. (2003).}
-#'   \item{r.hh.2006}{gives models (i), (ii) and (iii) in Hall and Housseini-Nasab (2006).}
-#'   \item{r.bridge}{samples a brownian motion and creates a functional coefficient made of the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
+#'   \item{r.cfs.2003}{implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
+#'   \item{r.hh.2006}{gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
+#'   \item{r.bridge}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
 #' }
-#' @param n sample size.
-#' @param t locations where the functional data is observed.
-#' @param b coefficients of the functional coefficient in the theoretical basis of principal components of the brownian motion.
+#' @param n number of functions to sample.
+#' @param t time locations for the functional data.
+#' @param b coefficients of the functional coefficient in the theoretical basis of principal components of the Brownian motion.
 #' @param type either example \code{"a"} or \code{"b"} from Cardot et al. (2003).
 #' @param imod either \code{1}, \code{2} or \code{3} for denoting models (i), (ii) and (iii) in Hall and Hosseini-Nasab (2006).
-#' @param ncb size of basis expansion used in Hall and Hosseini-Nasab (2006) for simulating the functional process.
 #' @return A list with the following elements:
 #' \itemize{
 #'   \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
@@ -45,7 +44,7 @@ r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(
   if (type == "a") {
     
     # beta = b1 * v1 + b2 * v2 + b3 * v3
-    v <- fda.usc::fdata(sqrt(2) * sin(t * pi * 0.5), argvals = t)
+    v <- fda.usc::fdata(mdata = sqrt(2) * sin(t * pi * 0.5), argvals = t)
     for (k in 2:length(b)) {
       
       v <- c(v, fda.usc::fdata(mdata = sqrt(2) * sin(t * pi * (k - 0.5)), 
@@ -72,26 +71,30 @@ r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(
 
 #' @rdname r.cfs.2003
 #' @export 
-r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 201), imod = 1, ncb = 20) {
+r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 201), imod = 1) {
 
-  # beta
-  beta.fdata <- fda.usc::fdata(pi^2 * (t^2 - 1/3), argvals = t)
-  
-  # X.fdata
-  v <- fda.usc::fdata(sqrt(2) * cos(pi * t), argvals = t)
-  for (k in 2:ncb) {
+  # Basis
+  v <- fda.usc::fdata(mdata = sqrt(2) * cos(pi * t), argvals = t)
+  for (k in 2:20) {
     
-    v <- c(v, fda.usc::fdata(sqrt(2) * cos(k * pi * t), argvals = t))
+    v <- c(v, fda.usc::fdata(mdata = sqrt(2) * cos(k * pi * t), argvals = t))
     
   }
-  sdcoef <- (1:ncb)^(-imod)
-  coefsim <- matrix(NA, ncol = ncb, nrow = n)
-  for (i in 1:ncb) {
+  
+  # beta
+  j <- 1:20
+  beta.fdata <- fda.usc::fdata(mdata = (2^(3/2) * (-1)^j * j^(-2)) %*% v$data, 
+                               argvals = t)
+  
+  # X.fdata
+  sdcoef <- j^(-imod)
+  coefsim <- matrix(NA, ncol = 20, nrow = n)
+  for (i in j) {
     
     coefsim[, i] <- rnorm(n, mean = 0, sd = sdcoef[i])
     
   }
-  X.fdata <- fda.usc::fdata(coefsim %*% v$data, argvals = t)
+  X.fdata <- fda.usc::fdata(mdata = coefsim %*% v$data, argvals = t)
 
   return(list("X.fdata" = X.fdata, "beta.fdata" = beta.fdata))
   
@@ -115,7 +118,7 @@ r.bridge <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)
   v <- fda.usc::fdata(mdata = sqrt(2) * sin(t * pi), argvals = t)
   for (k in 2:length(b)) {
     
-    v <- c(v, fda.usc::fdata(sqrt(2) * sin(t * pi * k), argvals = t))
+    v <- c(v, fda.usc::fdata(mdata = sqrt(2) * sin(t * pi * k), argvals = t))
     
   }
   beta.fdata <- fda.usc::fdata(mdata = matrix(b, nrow = 1) %*% v$data, argvals = t)
@@ -125,21 +128,62 @@ r.bridge <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)
 }
 
 
-#' @title Geometric brownian motion
+#' @title Geometric Brownian motion
 #' 
-#' @description Sampling of paths of the geometric brownian motion.
+#' @description Sampling of paths of the geometric Brownian motion.
 #' 
 #' @inheritParams r.cfs.2003
-#' @param S0 initial value of the geometric brownian motion.
+#' @param mu,sigma mean and diffusion of the underlying Brownian motion.
+#' @param s0 a number or a vector of length \code{n} giving the initial value(s) of the geometric Brownian motion.
 #' @return Functional sample, an \code{\link[fda.usc]{fdata}} object of length \code{n}.
-#' @details The absolute value of the process will be always larger or equal to the absolute value of \code{S0}.
 #' @examples 
-#' plot(r.gbm(n = 100, S0 = rnorm(100)))
+#' plot(r.gbm(n = 10, s0 = 1))
+#' plot(r.gbm(n = 10, mu = -1, s0 = rnorm(10, mean = 10)))
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-r.gbm <- function(n = 100, t = seq(0, 1, len = 201), S0 = 1) {
+r.gbm <- function(n = 100, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1) {
   
-  S0 * exp(fda.usc::rproc2fdata(n = n, t = t, sigma = "brownian"))
+  # Time-varying covariances
+  St <- sigma^2 * outer(t, t, function(s, t) pmin(s, t))
+  
+  # Sample N((mu - sigma^2 / 2) * t, St)
+  mdata <- mvtnorm::rmvnorm(n = n, mean = (mu - sigma^2 / 2) * t, sigma = St)
+  mdata <- s0 * exp(mdata)
+  
+  # As fdata object
+  return(fda.usc::fdata(mdata = mdata, argvals = t))
   
 }
 
+
+#' @title Ornstein-Uhlenbeck process
+#' 
+#' @description Sampling of paths of the Ornstein-Uhlenbeck process.
+#' 
+#' @inheritParams r.cfs.2003
+#' @param alpha strength of the drift.
+#' @param mu mean of the process.
+#' @param sigma diffusion coefficient.
+#' @param x0 a number or a vector of length \code{n} giving the initial value(s) of the Ornstein-Uhlenbeck process. By default, \code{n} points are sampled from the stationary distribution.
+#' @return Functional sample, an \code{\link[fda.usc]{fdata}} object of length \code{n}.
+#' @examples 
+#' plot(r.ou(n = 100))
+#' plot(r.ou(n = 100, alpha = 2, sigma = 4, x0 = 1:100))
+#' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
+#' @export
+r.ou <- function(n = 100, t = seq(0, 1, len = 201), mu = 0, alpha = 1, sigma = 1, 
+                 x0 = rnorm(n, mean = mu, sd = sigma/sqrt(2 * alpha))){
+
+  # Time-varying covariances
+  St <- sigma^2/(2 * alpha) * outer(t, t, function(s, t) {
+    exp(alpha * (2 * pmin(s, t) - (s + t))) - exp(-alpha * (s + t))
+    })
+  
+  # Sample N(0, St) and add time-varying mean
+  mdata <- mvtnorm::rmvnorm(n = n, mean = rep(0, length(t)), sigma = St)
+  mdata <- mdata + outer(x0, t, function(x0, t) mu + (x0 - mu) * exp(-alpha * t))
+  
+  # As fdata object
+  return(fda.usc::fdata(mdata = mdata, argvals = t))
+  
+}
