@@ -724,12 +724,9 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                         ncol = n, byrow = TRUE)
         
       }
-      
-      # Calculate Y.star
-      Y.star <- sweep(e.hat, 2, Y - e, "+")
-      
-      # Residuals from the bootstrap estimated model
-      e.hat.star[i, , ] <- Y.star %*% lm.proj.X.matrix
+
+      # Residuals from the bootstrap estimated model (implicit column recycling)
+      e.hat.star[i, , ] <- t(t(e.hat) + drop(Y - e)) %*% lm.proj.X.matrix
       
       # Calculate the bootstrap statistics
       rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star[i, , ],

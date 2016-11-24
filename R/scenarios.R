@@ -302,7 +302,8 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 #' check.betas(scenarios = 1:12, composite = TRUE)
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, M = 1e3) {
+check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
+                            R2 = 0.95, M = 1e3) {
 
   par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
 
@@ -311,11 +312,14 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, M 
     # Response densities
     t <- proc.time()[3]
     set.seed(12456789)
-    d0 <- density(r.mod(n = M, scenario = k, delta = 0, composite = composite)$Y, bw = "SJ")
+    d0 <- density(r.mod(n = M, scenario = k, delta = 0, composite = composite,
+                        R2 = R2)$Y, bw = "SJ")
     set.seed(12456789)
-    d1 <- density(r.mod(n = M, scenario = k, delta = 1, composite = composite)$Y, bw = "SJ")
+    d1 <- density(r.mod(n = M, scenario = k, delta = 1, composite = composite,
+                        R2 = R2)$Y, bw = "SJ")
     set.seed(12456789)
-    d2 <- density(r.mod(n = M, scenario = k, delta = 2, composite = composite)$Y, bw = "SJ")
+    d2 <- density(r.mod(n = M, scenario = k, delta = 2, composite = composite,
+                        R2 = R2)$Y, bw = "SJ")
     set.seed(12456789)
     if (times) {
       
@@ -341,7 +345,7 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, M 
 
 #' @rdname check.scenarios
 #' @export
-check.betas <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
+check.betas <- function(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = TRUE, 
                         est.beta = TRUE) {
 
   mar <- c(3, 2.5, 2, 2.5) + 0.1
@@ -350,7 +354,7 @@ check.betas <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
 
     # Sample
     t <- proc.time()[3]
-    samp <- r.mod(n = 100, scenario = k, delta = 0, composite = composite)
+    samp <- r.mod(n = 100, scenario = k, delta = 0, composite = composite, R2 = R2)
 
     # Estimate beta from 100 samples
     if (est.beta) {
