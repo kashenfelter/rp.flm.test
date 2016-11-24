@@ -198,9 +198,17 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
 
   }
 
+  # Variance explained by the linear regression
+  s2y <- switch(scenario,
+                1.37885641, 0.10200598, 0.25247980,
+                2.56708081, 8.09590848, 7.98459833,
+                0.54664892, 0.04646039, 0.18827926,
+                0.33637279, 3.43004737, 5.62054178,
+                76.674612, 1.385866)
+  
   # Response
   Y <- drop(fda.usc::inprod.fdata(X.fdata, beta0))
-  noise <- rnorm(n, mean = 0, sd = sqrt(var(Y) * (1/ R2 - 1)))
+  noise <- rnorm(n, mean = 0, sd = sqrt(s2y * (1/ R2 - 1)))
   Y <- switch(composite + 1, 0, Y) + noise + mdev
 
   return(list(X.fdata = X.fdata, Y = Y, beta.fdata = beta0))
