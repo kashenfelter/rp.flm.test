@@ -2,6 +2,5 @@
 *.so
 TODO
 create-package-devtools.R
-new-simus.R
 others.R
 *.Rdata
