@@ -4,9 +4,10 @@
 \alias{rp.flm.test}
 \title{Goodness-of fit test for the functional linear model using random projections}
 \usage{
-rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
-  pmax = 10, type.basis = "bspline", B = 5000, n.proj = 10,
-  verbose = TRUE, projs = 0.9, same.rwild = FALSE, ...)
+rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
+  p.criterion = "SIC", pmax = 10, p = NULL, type.basis = "bspline",
+  B = 5000, n.proj = 10, verbose = TRUE, projs = 0.9,
+  same.rwild = FALSE, ...)
 }
 \arguments{
 \item{X.fdata}{functional observations in the class \code{\link[fda.usc]{fdata}}.}
@@ -17,14 +18,16 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc", p = NULL,
 
 \item{est.method}{estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 \itemize{
-  \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.}
-  \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.}
-  \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
+  \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
+  \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
+  \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 }}
 
-\item{p}{number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.}
+\item{p.criterion}{for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.}
 
-\item{pmax}{maximum size of the basis expansion to consider in \code{\link{fregre.pc.cv}}, \code{\link{fregre.pls.cv}} and \code{\link{fregre.basis.cv}} for the optimal estimation of \eqn{\beta}{\beta}.}
+\item{pmax}{maximum size of the basis expansion to consider in when using \code{p.criterion}.}
+
+\item{p}{number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.}
 
 \item{type.basis}{type of basis if \code{est.method = "basis"}.}
 
@@ -54,6 +57,7 @@ An object with class \code{"htest"} whose underlying structure is a list contain
   \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
   \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
   \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+  \item{p.criterion}{Criterion employed for selecting \code{p}.}
   \item{data.name}{The character string "Y = <X, b> + e"}
 }
 }
@@ -79,15 +83,14 @@ Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 # Test all cases
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000) #  p-value = 0.5000, p-value = 0.5889
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", B = 1000) #  p-value = 0.2, p-value = <2e-16
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
+            p.criterion = fda.usc::GCV.S, B = 1000) #  p-value = 0.2, p-value = <2e-16
 
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pc", B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pls", B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "basis", B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000)
 
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 1, B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 1000)

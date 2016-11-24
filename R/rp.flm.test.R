@@ -236,12 +236,13 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @param beta0.fdata functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.
 #' @param est.method estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 #' \itemize{
-#'   \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{"SICc"} criterion.}
-#'   \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{"SICc"} criterion.}
-#'   \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, an optimum \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{"GCV.S"} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
+#'   \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
+#'   \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
+#'   \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 #' }
+#' @param p.criterion for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.
+#' @param pmax maximum size of the basis expansion to consider in when using \code{p.criterion}.
 #' @param p number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.
-#' @param pmax maximum size of the basis expansion to consider in \code{\link{fregre.pc.cv}}, \code{\link{fregre.pls.cv}} and \code{\link{fregre.basis.cv}} for the optimal estimation of \eqn{\beta}{\beta}.
 #' @param type.basis type of basis if \code{est.method = "basis"}.
 #' @param B number of bootstrap replicates to calibrate the distribution of the test statistic.
 #' @param n.proj vector with the number of projections to consider.
@@ -262,6 +263,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #'   \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
 #'   \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
 #'   \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+#'   \item{p.criterion}{Criterion employed for selecting \code{p}.}
 #'   \item{data.name}{The character string "Y = <X, b> + e"}
 #' }
 #' @details
@@ -280,15 +282,14 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' # Test all cases
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000) #  p-value = 0.5000, p-value = 0.5889
-#' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", B = 1000) #  p-value = 0.2, p-value = <2e-16
+#' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
+#'             p.criterion = fda.usc::GCV.S, B = 1000) #  p-value = 0.2, p-value = <2e-16
 #'
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 #'
-#' rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pc", B = 1000)
-#' rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "pls", B = 1000)
-#' rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, est.method = "basis", B = 1000)
+#' rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000)
 #'
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 1, B = 1000)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 1000)
@@ -406,9 +407,9 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
-                        p = NULL, pmax = 10, type.basis = "bspline", B = 5000,
-                        n.proj = 10, verbose = TRUE, projs = 0.9,
-                        same.rwild = FALSE, ...) {
+                        p.criterion = "SIC", pmax = 10, p = NULL, 
+                        type.basis = "bspline", B = 5000, n.proj = 10, 
+                        verbose = TRUE, projs = 0.9, same.rwild = FALSE, ...) {
   
   # Sample size
   n <- dim(X.fdata)[1]
@@ -453,7 +454,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     # PC
     if (est.method == "pc") {
       
-      # Optimal p by SICc criterion
+      # Optimal p by p.criterion
       if (p.data.driven) {
         
         # Method
@@ -461,7 +462,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
         # Choose the number of basis elements
         mod.pc <- fda.usc::fregre.pc.cv(fdataobj = X.fdata, y = Y, kmax = 1:pmax,
-                                        criteria = "SICc")
+                                        criteria = p.criterion)
         p.opt <- length(mod.pc$pc.opt)
         ord.opt <- mod.pc$pc.opt
         
@@ -511,7 +512,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     # PLS
     } else if (est.method == "pls") {
       
-      # Optimal p by SICc criterion
+      # Optimal p by p.criterion
       if (p.data.driven) {
         
         # Method
@@ -519,7 +520,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         
         # Choose the number of the basis: SIC is probably the best criteria
         mod.pls <- fda.usc::fregre.pls.cv(fdataobj = X.fdata, y = Y, kmax = pmax,
-                                          criteria = "SICc")
+                                          criteria = p.criterion)
         p.opt <- length(mod.pls$pls.opt)
         ord.opt <- mod.pls$pls.opt
         
@@ -569,7 +570,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
     # Deterministic basis
     } else if (est.method == "basis") {
       
-      # Optimal p by GCV criterion
+      # Optimal p by p.criterion
       if (p.data.driven) {
         
         # Method
@@ -580,7 +581,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                                               basis.x = 5:max(pmax, 5),
                                               basis.b = NULL,
                                               type.basis = type.basis,
-                                              type.CV = fda.usc::GCV.S,
+                                              type.CV = p.criterion,
                                               verbose = FALSE, ...)
         p.opt <- mod.basis$basis.x.opt$nbasis
         ord.opt <- 1:p.opt
@@ -815,7 +816,8 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                            proj.p.values = pval, method = meth, B = B,
                            n.proj = vec.nproj, projs = projs,
                            type.basis = type.basis, beta.est = beta.est, 
-                           p = p.opt, data.name = "Y = <X, b> + e"))
+                           p = p.opt, p.criterion = p.criterion,
+                           data.name = "Y = <X, b> + e"))
   class(result) <- "htest"
   return(result)
   

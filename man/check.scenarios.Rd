@@ -6,9 +6,9 @@
 \title{Check density of the responses and functional processes}
 \usage{
 check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE,
-  M = 1000)
+  R2 = 0.95, M = 1000)
 
-check.betas(scenarios = 1:12, composite = TRUE, times = TRUE,
+check.betas(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = TRUE,
   est.beta = TRUE)
 }
 \arguments{
@@ -17,6 +17,8 @@ check.betas(scenarios = 1:12, composite = TRUE, times = TRUE,
 \item{composite}{flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).}
 
 \item{times}{flag to indicate whether to show the time employed computing each model.}
+
+\item{R2}{proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\varepsilon} of the regression model.}
 
 \item{M}{number of samples employed to estimate the densities of the response.}
 
