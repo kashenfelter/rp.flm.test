@@ -42,7 +42,7 @@
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
-rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, fdata2pc.obj = 
+rdir.pc <- function(n, X.fdata, ncomp = 0.9, fdata2pc.obj = 
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                              nrow(X.fdata))), 
                     sd = TRUE) {
