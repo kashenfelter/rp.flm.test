@@ -117,7 +117,7 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
   # Normalize
   if (norm) {
   
-    rprojs$data <- rprojs$data / drop(norm.fdata(rprojs))
+    rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
       
   }
   
