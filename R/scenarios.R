@@ -209,7 +209,7 @@ r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
   # Response
   Y <- drop(fda.usc::inprod.fdata(X.fdata, beta0))
   noise <- rnorm(n, mean = 0, sd = sqrt(s2y * (1/ R2 - 1)))
-  Y <- switch(composite + 1, 0, Y) + noise + mdev
+  Y <- switch(composite + 1, 0, Y) + mdev + noise
 
   return(list(X.fdata = X.fdata, Y = Y, beta.fdata = beta0))
 

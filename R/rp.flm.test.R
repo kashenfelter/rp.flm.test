@@ -9,12 +9,14 @@
 #' @param n number of curves to be generated.
 #' @param X.fdata an \code{\link[fda.usc]{fdata}} object used to compute the functional principal components.
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
+#' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
 #' set.seed(34567)
 #' X.fdata <- rproc2fdata(n = 50, t = seq(0, 1, l = 201), sigma = "OU")
+#' pc <- fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), nrow(X.fdata)))
 #' 
 #' # Comparison for the variance type
 #' par(mfrow = c(1, 1))
@@ -25,22 +27,25 @@
 #'        col = c(gray(0.5), 2, 4), lwd = 2)
 #'        
 #' # Comparison for the threshold
-#' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.5)
-#' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.9)
-#' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95)
-#' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99)
-#' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999)
+#' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
+#' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
+#' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
+#' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
+#' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc)
 #' cols <- rainbow(5, alpha = 0.75)
 #' par(mfrow = c(3, 2))
 #' plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
-#' plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.5")
-#' plot(samp2, col = cols[2], lty = 1, main = "Threshold = 0.95")
-#' plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.90")
+#' plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.50")
+#' plot(samp2, col = cols[2], lty = 1, main = "Threshold = 0.90")
+#' plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.95")
 #' plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.99")
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
-rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, sd = TRUE) {
+rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, fdata2pc.obj = 
+                      fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
+                                                             nrow(X.fdata))), 
+                    sd = TRUE) {
   
   # Check fdata
   if (class(X.fdata) != "fdata") {
@@ -49,36 +54,32 @@ rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, sd = TRUE) {
     
   } 
 
-  # Compute PCs: fda.usc::fdata2pc computes all the PCs and then returns 
-  # the eigenvectors for the ncomp components (but returns eigenvalues of all the
-  # components)
+  # Consider PCs up to a threshold of the explained variance or up to max(ncomp)
+  ej <- fdata2pc.obj
+  m <- switch((ncomp < 1) + 1,
+              max(ncomp),
+              max(2, min(which(cumsum(ej$d^2) / sum(ej$d^2) > ncomp))))
   if (ncomp < 1) {
     
-    # Up to a threshold of the explained variance
-    m <- min(length(X.fdata$argvals), nrow(X.fdata))
-    ej <- fda.usc::fdata2pc(fdataobj = X.fdata, ncomp = m)
-    m <- max(2, min(which(cumsum(ej$d^2) / sum(ej$d^2) > ncomp)))
     ncomp <- 1:m
     
-  } else {
-    
-    # Up to max(ncomp)
-    m <- max(ncomp)
-    ej <- fda.usc::fdata2pc(fdataobj = X.fdata, ncomp = m)
-    
   }
   
+  # Compute PCs with fdata2pc if ej contains less eigenvectors than m
+  # The problem is that fda.usc::fdata2pc computes all the PCs and then returns 
+  # the eigenvalues (d) for all the components but only the eigenvectors (rotation)
+  # for the ncomp components.
+  if (nrow(ej$rotation) < m) {
+    
+    ej <- fda.usc::fdata2pc(X.fdata, ncomp = m)
+    
+  }
+    
   # Standard deviations of the scores of X.fdata on the eigenvectors
-  if (sd) {
-    
-    sdarg <- apply(ej$x[, ncomp], 2, sd)
-    
-  } else {
-    
-    sdarg <- rep(1, length(ncomp))
-    
-  }
-  
+  sdarg <- switch(sd + 1,
+                  rep(1, length(ncomp)),
+                  apply(ej$x[, ncomp], 2, sd))
+
   # Eigenvectors
   eigv <- ej$rotation[ncomp]
   
@@ -408,7 +409,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
-                        p.criterion = "SIC", pmax = 10, p = NULL, 
+                        p.criterion = "SICc", pmax = 10, p = NULL, 
                         type.basis = "bspline", B = 5000, n.proj = 10, 
                         verbose = TRUE, projs = 0.9, same.rwild = FALSE, ...) {
   
@@ -494,7 +495,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         ord.opt <- mod.pc$l
         
         # PC components to be passed to the bootstrap
-        pc.comp <- mod.pc$pc
+        pc.comp <- mod.pc$fdata.comp
         pc.comp$l <- mod.pc$l
         
         # Express X.fdata and beta.est in the basis
@@ -547,7 +548,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
         meth <- paste(meth, "a representation in a PLS basis of ", p, "elements")
         
         # Estimation of beta on the given fixed basis
-        mod.pls <- fda.usc::fregre.pc(fdataobj = X.fdata, y = Y, l = 1:p)
+        mod.pls <- fda.usc::fregre.pls(fdataobj = X.fdata, y = Y, l = 1:p)
         p.opt <- p
         ord.opt <- mod.pls$l
         
@@ -654,7 +655,14 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
   }
   if (is.numeric(projs)) {
     
-    projs <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = projs, sd = TRUE)
+    if (est.method != "pc" | !is.null(beta0.fdata)) {
+      
+      pc.comp <- fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
+                                                        nrow(X.fdata)))
+      
+    }
+    projs <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = projs, 
+                     fdata2pc.obj = pc.comp, sd = TRUE)
     
   }
   
