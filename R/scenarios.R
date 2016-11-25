@@ -33,7 +33,7 @@
 #' @references
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' @export
-r.mod <- function(n, scenario, delta, t = seq(0, 1, l = 201), R2 = 0.95, 
+r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95, 
                   composite = TRUE) {
 
   # Check for delta

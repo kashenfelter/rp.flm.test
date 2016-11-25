@@ -4,7 +4,7 @@
 \alias{r.gbm}
 \title{Geometric Brownian motion}
 \usage{
-r.gbm(n = 100, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1)
+r.gbm(n, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1)
 }
 \arguments{
 \item{n}{number of functions to sample.}

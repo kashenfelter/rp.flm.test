@@ -6,7 +6,7 @@
 \usage{
 rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
   p.criterion = "SICc", pmax = 10, p = NULL, type.basis = "bspline",
-  B = 5000, n.proj = 10, verbose = TRUE, projs = 0.9,
+  B = 5000, n.proj = 10, verbose = TRUE, projs = 0.5,
   same.rwild = FALSE, ...)
 }
 \arguments{

@@ -4,9 +4,9 @@
 \alias{rdir.pc}
 \title{Data-driven sampling of random directions guided by sample of functional data}
 \usage{
-rdir.pc(n = 10, X.fdata, ncomp = 0.9,
-  fdata2pc.obj = fda.usc::fdata2pc(X.fdata, ncomp =
-  min(length(X.fdata$argvals), nrow(X.fdata))), sd = TRUE)
+rdir.pc(n, X.fdata, ncomp = 0.5, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
+  ncomp = min(length(X.fdata$argvals), nrow(X.fdata))), sd = TRUE,
+  norm = FALSE)
 }
 \arguments{
 \item{n}{number of curves to be generated.}
@@ -18,6 +18,8 @@ rdir.pc(n = 10, X.fdata, ncomp = 0.9,
 \item{fdata2pc.obj}{output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.}
 
 \item{sd}{whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.}
+
+\item{norm}{whether the samples should be L2-normalized.}
 }
 \value{
 A \code{\link[fda.usc]{fdata}} object with the sampled directions.
@@ -42,11 +44,31 @@ legend("topleft", legend = c("Data", "Different variances", "Equal variances"),
        col = c(gray(0.5), 2, 4), lwd = 2)
        
 # Comparison for the threshold
-samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
-samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
-samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
-samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
-samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc)
+samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
+samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
+samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
+samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
+samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
+cols <- rainbow(5, alpha = 0.75)
+par(mfrow = c(3, 2))
+plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
+plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.25")
+plot(samp2, col = cols[2], lty = 1, main = "Threshold = 0.50")
+plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.90")
+plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.95")
+plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.99")
+
+# Normalizing
+samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc,
+                 norm = TRUE)
+samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc,
+                 norm = TRUE)
+samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc,
+                 norm = TRUE)
+samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc,
+                 norm = TRUE)
+samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc,
+                 norm = TRUE)
 cols <- rainbow(5, alpha = 0.75)
 par(mfrow = c(3, 2))
 plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")

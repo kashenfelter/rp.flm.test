@@ -6,12 +6,12 @@
 \alias{r.hh.2006}
 \title{Utilities for the simulation of functional linear models}
 \usage{
-r.cfs.2003(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2),
+r.cfs.2003(n, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2),
   type = c("a", "b")[1])
 
-r.hh.2006(n = 100, t = seq(0, 1, len = 201), imod = 1)
+r.hh.2006(n, t = seq(0, 1, len = 201), imod = 1)
 
-r.bridge(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2))
+r.bridge(n, t = seq(0, 1, len = 201), b = c(2, 4, 5)/sqrt(2))
 }
 \arguments{
 \item{n}{number of functions to sample.}

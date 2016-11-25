@@ -11,6 +11,7 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
+#' @param norm whether the samples should be L2-normalized.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
@@ -27,11 +28,31 @@
 #'        col = c(gray(0.5), 2, 4), lwd = 2)
 #'        
 #' # Comparison for the threshold
-#' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
-#' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
-#' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
-#' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
-#' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc)
+#' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
+#' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
+#' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
+#' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
+#' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
+#' cols <- rainbow(5, alpha = 0.75)
+#' par(mfrow = c(3, 2))
+#' plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
+#' plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.25")
+#' plot(samp2, col = cols[2], lty = 1, main = "Threshold = 0.50")
+#' plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.90")
+#' plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.95")
+#' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.99")
+#' 
+#' # Normalizing
+#' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc,
+#'                  norm = TRUE)
+#' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc,
+#'                  norm = TRUE)
+#' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc,
+#'                  norm = TRUE)
+#' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc,
+#'                  norm = TRUE)
+#' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc,
+#'                  norm = TRUE)
 #' cols <- rainbow(5, alpha = 0.75)
 #' par(mfrow = c(3, 2))
 #' plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
@@ -42,10 +63,10 @@
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
-rdir.pc <- function(n, X.fdata, ncomp = 0.9, fdata2pc.obj = 
+rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj = 
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                              nrow(X.fdata))), 
-                    sd = TRUE) {
+                    sd = TRUE, norm = FALSE) {
   
   # Check fdata
   if (class(X.fdata) != "fdata") {
@@ -92,6 +113,13 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.9, fdata2pc.obj =
   # Add mean
   rprojs <- fda.usc::fdata(mdata = t(t(rprojs) + drop(ej$mean$data)), 
                            argvals = fda.usc::argvals(X.fdata))
+  
+  # Normalize
+  if (norm) {
+  
+    rprojs$data <- rprojs$data / drop(norm.fdata(rprojs))
+      
+  }
   
   return(rprojs)
   
@@ -411,25 +439,13 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                         p.criterion = "SICc", pmax = 10, p = NULL, 
                         type.basis = "bspline", B = 5000, n.proj = 10, 
-                        verbose = TRUE, projs = 0.9, same.rwild = FALSE, ...) {
+                        verbose = TRUE, projs = 0.5, same.rwild = FALSE, ...) {
   
   # Sample size
   n <- dim(X.fdata)[1]
   
   # p data driven flag
   p.data.driven <- is.null(p)
-  
-  # Number of projections
-  if (length(n.proj) > 1) {
-    
-    vec.nproj <- sort(n.proj)
-    n.proj <- max(n.proj)
-    
-  } else {
-    
-    vec.nproj <- 1:n.proj
-    
-  }
   
   # Display progress
   if (verbose) {
@@ -655,14 +671,32 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
   }
   if (is.numeric(projs)) {
     
+    # Compute PCs if not done yet
     if (est.method != "pc" | !is.null(beta0.fdata)) {
       
       pc.comp <- fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                         nrow(X.fdata)))
       
     }
+    
+    # Random directions
+    if (length(n.proj) > 1) {
+      
+      vec.nproj <- sort(n.proj)
+      n.proj <- max(n.proj)
+      
+    } else {
+      
+      vec.nproj <- 1:n.proj
+      
+    }
     projs <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = projs, 
                      fdata2pc.obj = pc.comp, sd = TRUE)
+    
+  } else {
+    
+    n.proj <- length(projs)
+    vec.nproj <- 1:n.proj
     
   }
   

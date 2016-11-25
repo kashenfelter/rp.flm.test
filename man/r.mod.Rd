@@ -4,7 +4,7 @@
 \alias{r.mod}
 \title{Functional regression models for simple and composite hypothesis}
 \usage{
-r.mod(n, scenario, delta, t = seq(0, 1, l = 201), R2 = 0.95,
+r.mod(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
   composite = TRUE)
 }
 \arguments{

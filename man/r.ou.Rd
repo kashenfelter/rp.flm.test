@@ -4,7 +4,7 @@
 \alias{r.ou}
 \title{Ornstein-Uhlenbeck process}
 \usage{
-r.ou(n = 100, t = seq(0, 1, len = 201), mu = 0, alpha = 1, sigma = 1,
+r.ou(n, t = seq(0, 1, len = 201), mu = 0, alpha = 1, sigma = 1,
   x0 = rnorm(n, mean = mu, sd = sigma/sqrt(2 * alpha)))
 }
 \arguments{

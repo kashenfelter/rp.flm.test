@@ -35,7 +35,7 @@
 #' Cardot, H., Ferraty, F., Sarda, P. (2003) Spline estimators for the functional linear model. Statistica Sinica, 13(3), 571--592. \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/a13n31.pdf}
 #' Hall, P. and Hosseini-Nasab, M. (2006) On properties of functional principal components analysis. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 68(1), 109--126. \url{http://dx.doi.org/10.1111/j.1467-9868.2005.00535.x}
 #' @export 
-r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2), 
+r.cfs.2003 <- function(n, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2), 
                        type = c("a", "b")[1]) {
 
   # X.fdata
@@ -71,7 +71,7 @@ r.cfs.2003 <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(
 
 #' @rdname r.cfs.2003
 #' @export 
-r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 201), imod = 1) {
+r.hh.2006 <- function(n, t = seq(0, 1, len = 201), imod = 1) {
 
   # Basis
   v <- fda.usc::fdata(mdata = sqrt(2) * cos(pi * t), argvals = t)
@@ -103,7 +103,7 @@ r.hh.2006 <- function(n = 100, t = seq(0, 1, len = 201), imod = 1) {
 
 #' @rdname r.cfs.2003
 #' @export 
-r.bridge <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)) {
+r.bridge <- function(n, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)) {
 
   # X.fdata
   X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "brownian")
@@ -141,7 +141,7 @@ r.bridge <- function(n = 100, t = seq(0, 1, len = 201), b = c(2, 4, 5) / sqrt(2)
 #' plot(r.gbm(n = 10, mu = -1, s0 = rnorm(10, mean = 10)))
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-r.gbm <- function(n = 100, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1) {
+r.gbm <- function(n, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1) {
   
   # Time-varying covariances
   St <- sigma^2 * outer(t, t, function(s, t) pmin(s, t))
@@ -171,7 +171,7 @@ r.gbm <- function(n = 100, t = seq(0, 1, len = 201), mu = 0, sigma = 1, s0 = 1) 
 #' plot(r.ou(n = 100, alpha = 2, sigma = 4, x0 = 1:100))
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-r.ou <- function(n = 100, t = seq(0, 1, len = 201), mu = 0, alpha = 1, sigma = 1, 
+r.ou <- function(n, t = seq(0, 1, len = 201), mu = 0, alpha = 1, sigma = 1, 
                  x0 = rnorm(n, mean = mu, sd = sigma/sqrt(2 * alpha))){
 
   # Time-varying covariances
