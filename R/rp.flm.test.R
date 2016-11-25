@@ -55,8 +55,8 @@ rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, sd = TRUE) {
   if (ncomp < 1) {
     
     # Up to a threshold of the explained variance
-    ej <- fda.usc::fdata2pc(fdataobj = X.fdata, ncomp = min(length(X.fdata$argvals),
-                                                            nrow(X.fdata)))
+    m <- min(length(X.fdata$argvals), nrow(X.fdata))
+    ej <- fda.usc::fdata2pc(fdataobj = X.fdata, ncomp = m)
     m <- max(2, min(which(cumsum(ej$d^2) / sum(ej$d^2) > ncomp)))
     ncomp <- 1:m
     
@@ -85,11 +85,12 @@ rdir.pc <- function(n = 10, X.fdata, ncomp = 0.9, sd = TRUE) {
   # Compute linear combinations of the eigenvectors with coefficients sampled 
   # from a centred normal with standard deviations sdarg
   x <- matrix(rnorm(n * m), ncol = m)
-  x <- sweep(x, 2, sdarg, "*")
+  x <- t(t(x) * sdarg)
   rprojs <- x %*% eigv$data
   
   # Add mean
-  rprojs <- fda.usc::fdata(sweep(rprojs, 2, ej$mean$data, "+"), argvals = fda.usc::argvals(X.fdata))
+  rprojs <- fda.usc::fdata(mdata = t(t(rprojs) + drop(ej$mean$data)), 
+                           argvals = fda.usc::argvals(X.fdata))
   
   return(rprojs)
   
