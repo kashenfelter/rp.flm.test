@@ -4,7 +4,8 @@
 \alias{r.mod}
 \title{Functional regression models for simple and composite hypothesis}
 \usage{
-r.mod(n, scenario, delta, R2 = 0.95, composite = TRUE)
+r.mod(n, scenario, delta, t = seq(0, 1, l = 201), R2 = 0.95,
+  composite = TRUE)
 }
 \arguments{
 \item{n}{the sample size.}
@@ -13,7 +14,9 @@ r.mod(n, scenario, delta, R2 = 0.95, composite = TRUE)
 
 \item{delta}{an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.}
 
-\item{R2}{proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\varepsilon} of the regression model.}
+\item{t}{time locations for the functional data.}
+
+\item{R2}{proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.}
 
 \item{composite}{flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).}
 }

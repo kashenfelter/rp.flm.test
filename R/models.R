@@ -9,7 +9,7 @@
 #'   \item{r.bridge}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
 #' }
 #' @param n number of functions to sample.
-#' @param t time locations for the functional data.
+#' @inheritParams r.mod
 #' @param b coefficients of the functional coefficient in the theoretical basis of principal components of the Brownian motion.
 #' @param type either example \code{"a"} or \code{"b"} from Cardot et al. (2003).
 #' @param imod either \code{1}, \code{2} or \code{3} for denoting models (i), (ii) and (iii) in Hall and Hosseini-Nasab (2006).

@@ -5,9 +5,10 @@
 #' @description Sampling from the functional linear models considered in the simulation study of Cuesta-Albertos et al. (2016).
 #'
 #' @param n the sample size.
+#' @param t time locations for the functional data.
 #' @param scenario an index from \code{1} to \code{12} denoting the simulation scenario.
 #' @param delta an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.
-#' @param R2 proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\varepsilon} of the regression model.
+#' @param R2 proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.
 #' @param composite flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).
 #' @return A list with the following elements:
 #' \itemize{
@@ -32,10 +33,8 @@
 #' @references
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' @export
-r.mod <- function(n, scenario, delta, R2 = 0.95, composite = TRUE) {
-
-  # Common argvals
-  t <- seq(0, 1, l = 201)
+r.mod <- function(n, scenario, delta, t = seq(0, 1, l = 201), R2 = 0.95, 
+                  composite = TRUE) {
 
   # Check for delta
   if (!(delta %in% 0:3)) {
