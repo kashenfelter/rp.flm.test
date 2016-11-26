@@ -306,7 +306,7 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 #' check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE)
 #'
 #' # Check betas
-#' check.betas(scenarios = 1:12, composite = TRUE)
+#' check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
 check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
@@ -330,12 +330,12 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
     set.seed(12456789)
     if (times) {
       
-      cat("Model", k, "finished in", proc.time()[3] - t, "secs\n")
+      cat("Scenario", k, "finished in", proc.time()[3] - t, "secs\n")
 
     }
     
     # Plot
-    plot(d0, type = "l", lwd = 2, main = paste("Model", k), xlab = "", ylab = "",
+    plot(d0, type = "l", lwd = 2, main = paste("Scenario", k), xlab = "", ylab = "",
          ylim = c(0, max(d0$y, d1$y, d2$y) * 1.2))
     title(xlab = expression(Y == paste(symbol("\xe1"), list(X, rho),
                                        symbol("\xf1")) + delta[k] * m(X) + epsilon),
