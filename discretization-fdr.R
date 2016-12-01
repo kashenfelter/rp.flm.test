@@ -2,6 +2,7 @@
 ## The distribution of p-value FDR depending on the discretization of the p-values 
 ## and the number of p-values considered in the FDR
 library(manipulate)
+M <- 1e3
 manipulate({
   
   # B: precision of p-values
@@ -32,40 +33,40 @@ ci <- function(p, M) {
 }
 
 # Size as a function of K
-M <- 1e3
-B <- seq(1e1, 1e4, by = 1e1)
-K <- 1:100
-mK <- max(K)
-av.fdr.pval <- function(b, seed = 12453252) {
-
-  # A sample of p-vals with precision 1/b
-  set.seed(seed)  
-  samp <- matrix((sample(x = b + 1, size = mK * M, replace = TRUE) - 1)/b,
-                 nrow = M, ncol = mK)
-  
-  # Extract p-values
-  pvals <- sapply(K, function(k) {
-    apply(samp[, 1:k, drop = FALSE], 1, function(x) min(sort(x) / (1:k)) * k)
-  })
-
-  # Power
-  apply(pvals, 2, function(x) c(mean(x < 0.10), mean(x < 0.05), mean(x < 0.01)))
-  
-}
-A <- vector("list", 6)
-i <- 1
-for (b in c(5e2, 1e3, 5e3, 1e4, 5e4, 1e5)) {
-  
-  for (j in 1:10) {
-    
-    A[[i]][[j]] <- t(av.fdr.pval(b = b, seed = 202345 + j * 123))
-    
-  }
-  i <- i + 1
-  cat(i, "\n")
-  
-}
-
+# M <- 1e3
+# B <- seq(1e1, 1e4, by = 1e1)
+# K <- 1:100
+# mK <- max(K)
+# av.fdr.pval <- function(b, seed = 12453252) {
+# 
+#   # A sample of p-vals with precision 1/b
+#   set.seed(seed)  
+#   samp <- matrix((sample(x = b + 1, size = mK * M, replace = TRUE) - 1)/b,
+#                  nrow = M, ncol = mK)
+#   
+#   # Extract p-values
+#   pvals <- sapply(K, function(k) {
+#     apply(samp[, 1:k, drop = FALSE], 1, function(x) min(sort(x) / (1:k)) * k)
+#   })
+# 
+#   # Power
+#   apply(pvals, 2, function(x) c(mean(x < 0.10), mean(x < 0.05), mean(x < 0.01)))
+#   
+# }
+# A <- vector("list", 6)
+# i <- 1
+# for (b in c(5e2, 1e3, 5e3, 1e4, 5e4, 1e5)) {
+#   
+#   for (j in 1:10) {
+#     
+#     A[[i]][[j]] <- t(av.fdr.pval(b = b, seed = 202345 + j * 123))
+#     
+#   }
+#   i <- i + 1
+#   cat(i, "\n")
+#   
+# }
+# 
 # Matplot: 10 trajectories of the empirical size of the FDR (indexed by the number 
 # of p-values) with respect to different p-value discretizations
 library(viridis)
