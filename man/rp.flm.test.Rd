@@ -75,10 +75,10 @@ No NA's are allowed neither in the functional covariate nor in the scalar respon
 set.seed(345678)
 t <- seq(0, 1, l = 101)
 n <- 100
-X <- rproc2fdata(n = n, t = t, sigma = "OU")
+X <- r.ou(n = n, t = t, alpha = 2, sigma = 0.5)
 beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
                rangeval = c(0,1))
-Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
+Y <- inprod.fdata(X^2, beta0) + rnorm(n, sd = 0.1)
 
 # Test all cases
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
@@ -97,10 +97,14 @@ rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 \dontrun{
 # Composite hypothesis: do not reject FLM
-rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
+set.seed(23456789)
+projs <- rdir.pc(n = 5, X.fdata = X, zero.mean = FALSE)
+rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, projs = projs)
+rp.test$p.values.fdr
+rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, n.proj = 5)
+rp.test$p.values.fdr
 pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000,
                       plot.it = FALSE)
-rp.test
 pcvm.test
 
 # Estimation of beta

@@ -6,7 +6,7 @@
 \usage{
 rdir.pc(n, X.fdata, ncomp = 0.5, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
   ncomp = min(length(X.fdata$argvals), nrow(X.fdata))), sd = TRUE,
-  norm = FALSE)
+  zero.mean = TRUE, norm = FALSE)
 }
 \arguments{
 \item{n}{number of curves to be generated.}
@@ -18,6 +18,8 @@ rdir.pc(n, X.fdata, ncomp = 0.5, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
 \item{fdata2pc.obj}{output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.}
 
 \item{sd}{whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.}
+
+\item{zero.mean}{wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.}
 
 \item{norm}{whether the samples should be L2-normalized.}
 }
@@ -32,8 +34,15 @@ with \eqn{h_j\sim\mathcal{N}(0, \sigma_j^2)}{h_j~N(0, \sigma_j^2)}, \eqn{j=1,\ld
 \examples{
 # Simulate some data
 set.seed(34567)
-X.fdata <- rproc2fdata(n = 50, t = seq(0, 1, l = 201), sigma = "OU")
-pc <- fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), nrow(X.fdata)))
+X.fdata <- r.ou(n = 50, mu = 0, alpha = 2, sigma = 1, t = seq(0, 1, l = 201), 
+                x0 = rep(0, 50))
+pc <- fdata2pc(X.fdata, ncomp = 20)
+
+# Samples
+set.seed(34567)
+rdir.pc(n = 5, X.fdata = X.fdata, zero.mean = FALSE)$data[, 1:5]
+set.seed(34567)
+rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 
 # Comparison for the variance type
 par(mfrow = c(1, 1))
@@ -42,7 +51,7 @@ lines(rdir.pc(n = 10, X.fdata = X.fdata), col = 2, lty = 1)
 lines(rdir.pc(n = 10, X.fdata = X.fdata, sd = FALSE), col = 4, lty = 1)
 legend("topleft", legend = c("Data", "Different variances", "Equal variances"), 
        col = c(gray(0.5), 2, 4), lwd = 2)
-       
+ 
 # Comparison for the threshold
 samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
 samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)

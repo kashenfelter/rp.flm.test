@@ -35,7 +35,7 @@ Nothing. The functions are called for producing diagnostic plots.
 check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE)
 
 # Check betas
-check.betas(scenarios = 1:12, composite = TRUE)
+check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).

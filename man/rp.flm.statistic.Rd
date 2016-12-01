@@ -35,7 +35,7 @@ designed to test the goodness-of-fit of a functional linear model with scalar re
 set.seed(345678)
 t <- seq(0, 1, l = 101)
 n <- 100
-X <- rproc2fdata(n = n, t = t, sigma = "OU")
+X <- r.ou(n = n, t = t)
 beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
                rangeval = c(0,1))
 Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
@@ -44,8 +44,8 @@ Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 mod <- fregre.pc(fdataobj = X, y = Y, l = 1:3)
 
 # Projections
-proj.X1 <- inprod.fdata(X, rproc2fdata(n = 1, t = t))
-proj.X2 <- inprod.fdata(X, rproc2fdata(n = 1, t = t))
+proj.X1 <- inprod.fdata(X, r.ou(n = 1, t = t))
+proj.X2 <- inprod.fdata(X, r.ou(n = 1, t = t))
 proj.X12 <- cbind(proj.X1, proj.X2)
 
 # Statistics

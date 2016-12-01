@@ -166,7 +166,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
   } else if (scenario == 13) {
 
     # Toy example (Edu)
-    X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "OrnsteinUhlenbeck")
+    X.fdata <- r.ou(n = n, t = t)
     for (i in 1:n) {
 
       X.fdata$data[i, ] <- rnorm(1, mean = 0, sd = 2) * exp(-t) +
@@ -312,8 +312,7 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
                             R2 = 0.95, M = 1e3) {
 
-  par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
-
+  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(5, 4, 4, 2) + 0.1)
   for (k in scenarios) {
 
     # Response densities
@@ -356,7 +355,7 @@ check.betas <- function(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = T
                         est.beta = TRUE) {
 
   mar <- c(3, 2.5, 2, 2.5) + 0.1
-  par(mfrow = c(3, 4), mar = c(5, 4, 4, 2) + 0.1)
+  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(5, 4, 4, 2) + 0.1)
   for (k in scenarios) {
 
     # Sample

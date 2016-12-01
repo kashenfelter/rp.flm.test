@@ -11,13 +11,21 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
+#' @param zero.mean wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
 #' @param norm whether the samples should be L2-normalized.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
 #' set.seed(34567)
-#' X.fdata <- rproc2fdata(n = 50, t = seq(0, 1, l = 201), sigma = "OU")
-#' pc <- fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), nrow(X.fdata)))
+#' X.fdata <- r.ou(n = 50, mu = 0, alpha = 2, sigma = 1, t = seq(0, 1, l = 201), 
+#'                 x0 = rep(0, 50))
+#' pc <- fdata2pc(X.fdata, ncomp = 20)
+#' 
+#' # Samples
+#' set.seed(34567)
+#' rdir.pc(n = 5, X.fdata = X.fdata, zero.mean = FALSE)$data[, 1:5]
+#' set.seed(34567)
+#' rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 #' 
 #' # Comparison for the variance type
 #' par(mfrow = c(1, 1))
@@ -26,7 +34,7 @@
 #' lines(rdir.pc(n = 10, X.fdata = X.fdata, sd = FALSE), col = 4, lty = 1)
 #' legend("topleft", legend = c("Data", "Different variances", "Equal variances"), 
 #'        col = c(gray(0.5), 2, 4), lwd = 2)
-#'        
+#'  
 #' # Comparison for the threshold
 #' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
 #' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
@@ -66,7 +74,7 @@
 rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj = 
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                              nrow(X.fdata))), 
-                    sd = TRUE, norm = FALSE) {
+                    sd = TRUE, zero.mean = TRUE, norm = FALSE) {
   
   # Check fdata
   if (class(X.fdata) != "fdata") {
@@ -108,10 +116,7 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
   # from a centred normal with standard deviations sdarg
   x <- matrix(rnorm(n * m), ncol = m)
   x <- t(t(x) * sdarg)
-  rprojs <- x %*% eigv$data
-  
-  # Add mean
-  rprojs <- fda.usc::fdata(mdata = t(t(rprojs) + drop(ej$mean$data)), 
+  rprojs <- fda.usc::fdata(mdata = x %*% eigv$data, 
                            argvals = fda.usc::argvals(X.fdata))
   
   # Normalize
@@ -119,6 +124,13 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
   
     rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
       
+  }
+  
+  # Add mean
+  if (!zero.mean) {
+    
+    rprojs$data <- t(t(rprojs$data) + drop(ej$mean$data))
+    
   }
   
   return(rprojs)
@@ -147,7 +159,7 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
 #' set.seed(345678)
 #' t <- seq(0, 1, l = 101)
 #' n <- 100
-#' X <- rproc2fdata(n = n, t = t, sigma = "OU")
+#' X <- r.ou(n = n, t = t)
 #' beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 #'                rangeval = c(0,1))
 #' Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
@@ -156,8 +168,8 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
 #' mod <- fregre.pc(fdataobj = X, y = Y, l = 1:3)
 #'
 #' # Projections
-#' proj.X1 <- inprod.fdata(X, rproc2fdata(n = 1, t = t))
-#' proj.X2 <- inprod.fdata(X, rproc2fdata(n = 1, t = t))
+#' proj.X1 <- inprod.fdata(X, r.ou(n = 1, t = t))
+#' proj.X2 <- inprod.fdata(X, r.ou(n = 1, t = t))
 #' proj.X12 <- cbind(proj.X1, proj.X2)
 #'
 #' # Statistics
@@ -304,10 +316,10 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' set.seed(345678)
 #' t <- seq(0, 1, l = 101)
 #' n <- 100
-#' X <- rproc2fdata(n = n, t = t, sigma = "OU")
+#' X <- r.ou(n = n, t = t, alpha = 2, sigma = 0.5)
 #' beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 #'                rangeval = c(0,1))
-#' Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
+#' Y <- inprod.fdata(X^2, beta0) + rnorm(n, sd = 0.1)
 #'
 #' # Test all cases
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
@@ -326,10 +338,14 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
 #' \dontrun{
 #' # Composite hypothesis: do not reject FLM
-#' rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
+#' set.seed(23456789)
+#' projs <- rdir.pc(n = 5, X.fdata = X, zero.mean = FALSE)
+#' rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, projs = projs)
+#' rp.test$p.values.fdr
+#' rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, n.proj = 5)
+#' rp.test$p.values.fdr
 #' pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000,
 #'                       plot.it = FALSE)
-#' rp.test
 #' pcvm.test
 #'
 #' # Estimation of beta
