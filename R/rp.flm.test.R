@@ -811,8 +811,8 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
       # Generate bootstrap errors
       if (same.rwild) {
         
-        e.hat.star[i, , ] <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj, ncol = n,
-                                    byrow = TRUE)
+        e.hat.star[i, , ] <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj,
+                                    ncol = n, byrow = TRUE)
         
       } else {
         
@@ -841,8 +841,8 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
   pval <- matrix(nrow = n.proj, ncol = 2)
   for (i in 1:n.proj) {
     
-    pval[i, 1] <- mean(rp.stat.star[i, 1, ] > rp.stat$statistic[i, 1]) # CvM
-    pval[i, 2] <- mean(rp.stat.star[i, 2, ] > rp.stat$statistic[i, 2]) # KS
+    pval[i, 1] <- mean(rp.stat$statistic[i, 1] <= rp.stat.star[i, 1, ]) # CvM
+    pval[i, 2] <- mean(rp.stat$statistic[i, 2] <= rp.stat.star[i, 2, ]) # KS
     
   }
   
