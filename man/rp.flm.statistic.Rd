@@ -9,7 +9,7 @@ rp.flm.statistic(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE)
 \arguments{
 \item{proj.X}{matrix of size \code{c(n, n.proj)} containing, for each column, the projections of the functional data \eqn{X_1,\ldots,X_n} into a random direction \eqn{h}. Not required if \code{proj.X.ord} is provided.}
 
-\item{residuals}{the residuals of the fitted funtional linear model, \eqn{Y_i-\langle X_i,\hat\beta\rangle}{Y_i - <X_i, \hat\beta, Y_i>}. Either a vector of length \code{n} (same residuals for all projections) or a matrix of size \code{c(n.proj, n)} (each projection has an associated set residuals).}
+\item{residuals}{the residuals of the fitted funtional linear model, \eqn{Y_i-\langle X_i,\hat \beta\rangle}{Y_i - <X_i, \hat \beta, Y_i>}. Either a vector of length \code{n} (same residuals for all projections) or a matrix of size \code{c(n.proj, n)} (each projection has an associated set residuals).}
 
 \item{proj.X.ord}{matrix containing the row permutations of \code{proj.X} which rearranges them increasingly, for each column. So, for example \code{proj.X[proj.X.ord[, 1], 1]} equals \code{sort(proj.X[, 1])}. If not provided, it is computed internally.}
 
@@ -17,14 +17,14 @@ rp.flm.statistic(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE)
 }
 \value{
 A list containing:
-\itemize{
-  \item{statistic}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
-  \item{proj.X.ord}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
+\describe{
+  \item{\code{statistic}}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
+  \item{\code{proj.X.ord}}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
 }
 }
 \description{
 Computes the Cramer-von Mises (CvM) and Kolmogorv-Smirnov (kS) statistics on the projected process
-\deqn{T_{n,h}(u)=\frac{1}{n}\sum_{i=1}^n (Y_i-\langle X_i,\hat\beta\rangle)1_{\{\langle X_i, h\rangle\leq u\}},}{T_{n, h}(u)=1/n\sum_{i = 1}^n (Y_i - <X_i, \hat\beta>)1_{<X_i, h> \le u},}
+\deqn{T_{n,h}(u)=\frac{1}{n}\sum_{i=1}^n (Y_i-\langle X_i,\hat \beta\rangle)1_{\{\langle X_i, h\rangle\leq u\}},}{T_{n, h}(u)=1/n\sum_{i = 1}^n (Y_i - <X_i, \hat \beta>)1_{<X_i, h> \le u},}
 designed to test the goodness-of-fit of a functional linear model with scalar response.
 }
 \details{

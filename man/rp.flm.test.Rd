@@ -17,10 +17,10 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
 \item{beta0.fdata}{functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.}
 
 \item{est.method}{estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
-\itemize{
-  \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
-  \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
-  \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
+\describe{
+  \item{\code{"pc"}}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
+  \item{\code{"pls"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
+  \item{\code{"basis"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 }}
 
 \item{p.criterion}{for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.}
@@ -45,26 +45,26 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
 }
 \value{
 An object with class \code{"htest"} whose underlying structure is a list containing the following components:
-\itemize{
-  \item{p.values.fdr}{A matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
-  \item{proj.statistics}{A matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
-  \item{boot.proj.statistics}{An array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
-  \item{proj.p.values}{A matrix of size \code{c(n.proj, 2)}}
-  \item{method}{Information about the test performed and the kind of estimation performed.}
-  \item{B}{Number of bootstrap replicates used.}
-  \item{n.proj}{Number of projections considered.}
-  \item{projs}{Random directions employed to project \code{X.fdata}.}
-  \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
-  \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
-  \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
-  \item{p.criterion}{Criterion employed for selecting \code{p}.}
-  \item{data.name}{The character string "Y = <X, b> + e"}
+\describe{
+  \item{\code{p.values.fdr}}{a matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
+  \item{\code{proj.statistics}}{a matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
+  \item{\code{boot.proj.statistics}}{an array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
+  \item{\code{proj.p.values}}{a matrix of size \code{c(n.proj, 2)}}
+  \item{\code{method}}{information about the test performed and the kind of estimation performed.}
+  \item{\code{B}}{number of bootstrap replicates used.}
+  \item{\code{n.proj}}{number of projections considered.}
+  \item{\code{projs}}{random directions employed to project \code{X.fdata}.}
+  \item{\code{type.basis}}{type of basis for \code{est.method = "basis"}.}
+  \item{\code{beta.est}}{estimated functional parameter \eqn{\hat \beta}{\hat \beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
+  \item{\code{p}}{number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+  \item{\code{p.criterion}}{criterion employed for selecting \code{p}.}
+  \item{\code{data.name}}{the character string "Y = <X, b> + e"}
 }
 }
 \description{
 Tests the composite null hypothesis of a Functional Linear Model with scalar response (FLM),
-\deqn{H_0:\,Y=\langle X,\beta\rangle+\epsilon\quad\mathrm{vs}\quad H_1:\,Y\neq\langle X,\beta\rangle+\epsilon.}{H_0: Y=<X,\beta>+\epsilon vs H_1: Y!=<X,\beta>+\epsilon.}
-If \eqn{\beta=\beta_0}{\beta=\beta0} is provided, then the simple hypothesis \eqn{H_0:\,Y=\langle X,\beta_0\rangle+\epsilon}{H_0: Y=<X,\beta0>+\epsilon} is tested. The way of testing the null hypothesis is via a norm (Cramer-von Mises or Kolmogorov-Smirnov) in the empirical process indexed by the projections.
+\deqn{H_0:\,Y=\langle X,\beta\rangle+\epsilon\quad\mathrm{vs}\quad H_1:\,Y\neq\langle X,\beta\rangle+\epsilon.}{H_0: Y = <X, \beta> + \epsilon vs H_1: Y != <X, \beta> + \epsilon.}
+If \eqn{\beta=\beta_0}{\beta=\beta_0} is provided, then the simple hypothesis \eqn{H_0:\,Y=\langle X,\beta_0\rangle+\epsilon}{H_0: Y = <X, \beta_0> + \epsilon} is tested. The way of testing the null hypothesis is via a norm (Cramer-von Mises or Kolmogorov-Smirnov) in the empirical process indexed by the projections.
 }
 \details{
 No NA's are allowed neither in the functional covariate nor in the scalar response.

@@ -11,10 +11,10 @@
 #' @param R2 proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.
 #' @param composite flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).
 #' @return A list with the following elements:
-#' \itemize{
-#'   \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
-#'   \item{Y}{the scalar responses, a vector of length \code{n}.}
-#'   \item{beta.fdata}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
+#' \describe{
+#'   \item{\code{X.fdata}}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
+#'   \item{\code{Y}}{the scalar responses, a vector of length \code{n}.}
+#'   \item{\code{beta.fdata}}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
 #' }
 #' @details The samples are generated from the regression model
 #' \deqn{Y = \langle \mathcal{X}, \beta\rangle + \delta m(\mathcal{X})+\varepsilon,}{Y = <X, \beta> + \delta m(X)+\varepsilon,}

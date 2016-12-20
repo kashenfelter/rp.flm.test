@@ -22,10 +22,10 @@ r.mod(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 }
 \value{
 A list with the following elements:
-\itemize{
-  \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
-  \item{Y}{the scalar responses, a vector of length \code{n}.}
-  \item{beta.fdata}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
+\describe{
+  \item{\code{X.fdata}}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
+  \item{\code{Y}}{the scalar responses, a vector of length \code{n}.}
+  \item{\code{beta.fdata}}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
 }
 }
 \description{

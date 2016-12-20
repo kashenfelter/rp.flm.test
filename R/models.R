@@ -4,9 +4,9 @@
 #' 
 #' @description The functions \code{r.cfs.2003}, \code{r.hh.2006} and \code{r.bridge} sample the functional covariate and construct functional coefficients for their use in functional linear models:
 #' \itemize{
-#'   \item{r.cfs.2003}{implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
-#'   \item{r.hh.2006}{gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
-#'   \item{r.bridge}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
+#'   \item{\code{r.cfs.2003}}{implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
+#'   \item{\code{r.hh.2006}}{gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
+#'   \item{\code{r.bridge}}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
 #' }
 #' @param n number of functions to sample.
 #' @inheritParams r.mod
@@ -14,9 +14,9 @@
 #' @param type either example \code{"a"} or \code{"b"} from Cardot et al. (2003).
 #' @param imod either \code{1}, \code{2} or \code{3} for denoting models (i), (ii) and (iii) in Hall and Hosseini-Nasab (2006).
 #' @return A list with the following elements:
-#' \itemize{
-#'   \item{X.fdata}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
-#'   \item{beta.fdata}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
+#' \describe{
+#'   \item{\code{X.fdata}}{the sample of functional data, an \code{\link[fda.usc]{fdata}} object of length \code{n}.}
+#'   \item{\code{beta.fdata}}{the functional coefficient, an \code{\link[fda.usc]{fdata}} object.}
 #' }
 #' @examples 
 #' # Cardot et al. (2003)
