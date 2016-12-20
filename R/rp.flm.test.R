@@ -319,7 +319,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' X <- r.ou(n = n, t = t, alpha = 2, sigma = 0.5)
 #' beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 #'                rangeval = c(0,1))
-#' Y <- inprod.fdata(X^2, beta0) + rnorm(n, sd = 0.1)
+#' Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 #'
 #' # Test all cases
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
