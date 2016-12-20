@@ -16,9 +16,9 @@
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
-#' set.seed(34567)
-#' X.fdata <- r.ou(n = 50, mu = 0, alpha = 2, sigma = 1, t = seq(0, 1, l = 201), 
-#'                 x0 = rep(0, 50))
+#' set.seed(345673)
+#' X.fdata <- r.ou(n = 200, mu = 0, alpha = 1, sigma = 2, t = seq(0, 1, l = 201), 
+#'                 x0 = rep(0, 200))
 #' pc <- fdata2pc(X.fdata, ncomp = 20)
 #' 
 #' # Samples
@@ -28,20 +28,39 @@
 #' rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 #' 
 #' # Comparison for the variance type
-#' par(mfrow = c(1, 1))
-#' plot(X.fdata, col = gray(0.75), lty = 1)
-#' lines(rdir.pc(n = 10, X.fdata = X.fdata), col = 2, lty = 1)
-#' lines(rdir.pc(n = 10, X.fdata = X.fdata, sd = FALSE), col = 4, lty = 1)
+#' set.seed(456732)
+#' n.proj <- 100
+#' samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = FALSE, ncomp = 0.9)
+#' samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = FALSE, ncomp = 0.9)
+#' samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = TRUE, ncomp = 0.9)
+#' samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = TRUE, ncomp = 0.9)
+#' par(mfrow = c(1, 2))
+#' plot(X.fdata, col = gray(0.85), lty = 1)
+#' lines(samp1[1:10], col = 2, lty = 1)
+#' lines(samp2[1:10], col = 4, lty = 1)
 #' legend("topleft", legend = c("Data", "Different variances", "Equal variances"), 
-#'        col = c(gray(0.5), 2, 4), lwd = 2)
-#'  
+#'        col = c(gray(0.85), 2, 4), lwd = 2)
+#' plot(X.fdata, col = gray(0.85), lty = 1)
+#' lines(samp3[1:10], col = 5, lty = 1)
+#' lines(samp4[1:10], col = 6, lty = 1)
+#' legend("topleft", legend = c("Data", "Different variances, normalized", 
+#'        "Equal variances, normalized"), col = c(gray(0.85), 5:6), lwd = 2)
+#' 
+#' # Correlations (stronger with different variances and unnormalized; 
+#' # stronger with lower ncomp)
+#' ind <- lower.tri(matrix(nrow = n.proj, ncol = n.proj))
+#' median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp1[i]))))[ind])
+#' median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp2[i]))))[ind])
+#' median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp3[i]))))[ind])
+#' median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp4[i]))))[ind])
+#' 
 #' # Comparison for the threshold
 #' samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
 #' samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
 #' samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
 #' samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
 #' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
-#' cols <- rainbow(5, alpha = 0.75)
+#' cols <- rainbow(5, alpha = 0.25)
 #' par(mfrow = c(3, 2))
 #' plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
 #' plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.25")
@@ -61,7 +80,7 @@
 #'                  norm = TRUE)
 #' samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc,
 #'                  norm = TRUE)
-#' cols <- rainbow(5, alpha = 0.75)
+#' cols <- rainbow(5, alpha = 0.25)
 #' par(mfrow = c(3, 2))
 #' plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
 #' plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.50")
@@ -141,17 +160,17 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
 #' @title Statistics for testing the functional linear model using random projections
 #'
 #' @description Computes the Cramer-von Mises (CvM) and Kolmogorv-Smirnov (kS) statistics on the projected process
-#' \deqn{T_{n,h}(u)=\frac{1}{n}\sum_{i=1}^n (Y_i-\langle X_i,\hat\beta\rangle)1_{\{\langle X_i, h\rangle\leq u\}},}{T_{n, h}(u)=1/n\sum_{i = 1}^n (Y_i - <X_i, \hat\beta>)1_{<X_i, h> \le u},}
+#' \deqn{T_{n,h}(u)=\frac{1}{n}\sum_{i=1}^n (Y_i-\langle X_i,\hat \beta\rangle)1_{\{\langle X_i, h\rangle\leq u\}},}{T_{n, h}(u)=1/n\sum_{i = 1}^n (Y_i - <X_i, \hat \beta>)1_{<X_i, h> \le u},}
 #' designed to test the goodness-of-fit of a functional linear model with scalar response.
 #'
 #' @param proj.X matrix of size \code{c(n, n.proj)} containing, for each column, the projections of the functional data \eqn{X_1,\ldots,X_n} into a random direction \eqn{h}. Not required if \code{proj.X.ord} is provided.
-#' @param residuals the residuals of the fitted funtional linear model, \eqn{Y_i-\langle X_i,\hat\beta\rangle}{Y_i - <X_i, \hat\beta, Y_i>}. Either a vector of length \code{n} (same residuals for all projections) or a matrix of size \code{c(n.proj, n)} (each projection has an associated set residuals).
+#' @param residuals the residuals of the fitted funtional linear model, \eqn{Y_i-\langle X_i,\hat \beta\rangle}{Y_i - <X_i, \hat \beta, Y_i>}. Either a vector of length \code{n} (same residuals for all projections) or a matrix of size \code{c(n.proj, n)} (each projection has an associated set residuals).
 #' @param proj.X.ord matrix containing the row permutations of \code{proj.X} which rearranges them increasingly, for each column. So, for example \code{proj.X[proj.X.ord[, 1], 1]} equals \code{sort(proj.X[, 1])}. If not provided, it is computed internally.
 #' @param F.code whether to use faster \code{FORTRAN} code or \code{R} code.
 #' @return A list containing:
-#' \itemize{
-#'   \item{statistic}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
-#'   \item{proj.X.ord}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
+#' \describe{
+#'   \item{\code{statistic}}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
+#'   \item{\code{proj.X.ord}}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
 #' }
 #' @details \code{NA}'s are not allowed neither in the functional covariate nor in the scalar response.
 #' @examples
@@ -270,17 +289,17 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @title Goodness-of fit test for the functional linear model using random projections
 #'
 #' @description Tests the composite null hypothesis of a Functional Linear Model with scalar response (FLM),
-#' \deqn{H_0:\,Y=\langle X,\beta\rangle+\epsilon\quad\mathrm{vs}\quad H_1:\,Y\neq\langle X,\beta\rangle+\epsilon.}{H_0: Y=<X,\beta>+\epsilon vs H_1: Y!=<X,\beta>+\epsilon.}
-#' If \eqn{\beta=\beta_0}{\beta=\beta0} is provided, then the simple hypothesis \eqn{H_0:\,Y=\langle X,\beta_0\rangle+\epsilon}{H_0: Y=<X,\beta0>+\epsilon} is tested. The way of testing the null hypothesis is via a norm (Cramer-von Mises or Kolmogorov-Smirnov) in the empirical process indexed by the projections.
+#' \deqn{H_0:\,Y=\langle X,\beta\rangle+\epsilon\quad\mathrm{vs}\quad H_1:\,Y\neq\langle X,\beta\rangle+\epsilon.}{H_0: Y = <X, \beta> + \epsilon vs H_1: Y != <X, \beta> + \epsilon.}
+#' If \eqn{\beta=\beta_0}{\beta=\beta_0} is provided, then the simple hypothesis \eqn{H_0:\,Y=\langle X,\beta_0\rangle+\epsilon}{H_0: Y = <X, \beta_0> + \epsilon} is tested. The way of testing the null hypothesis is via a norm (Cramer-von Mises or Kolmogorov-Smirnov) in the empirical process indexed by the projections.
 #'
 #' @param X.fdata functional observations in the class \code{\link[fda.usc]{fdata}}.
 #' @param Y scalar responses for the FLM. Must be a vector with the same number of elements as functions are in \code{X.fdata}.
 #' @param beta0.fdata functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.
 #' @param est.method estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
-#' \itemize{
-#'   \item{"pc"}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
-#'   \item{"pls"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
-#'   \item{"basis"}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
+#' \describe{
+#'   \item{\code{"pc"}}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
+#'   \item{\code{"pls"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
+#'   \item{\code{"basis"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 #' }
 #' @param p.criterion for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.
 #' @param pmax maximum size of the basis expansion to consider in when using \code{p.criterion}.
@@ -293,20 +312,20 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @param same.rwild wether to employ the same wild bootstrap residuals for different projections or not.
 #' @param ... further arguments passed to \code{\link[fda]{create.basis}} (not \code{rangeval} that is taken as the \code{rangeval} of \code{X.fdata}).
 #' @return An object with class \code{"htest"} whose underlying structure is a list containing the following components:
-#' \itemize{
-#'   \item{p.values.fdr}{A matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
-#'   \item{proj.statistics}{A matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
-#'   \item{boot.proj.statistics}{An array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
-#'   \item{proj.p.values}{A matrix of size \code{c(n.proj, 2)}}
-#'   \item{method}{Information about the test performed and the kind of estimation performed.}
-#'   \item{B}{Number of bootstrap replicates used.}
-#'   \item{n.proj}{Number of projections considered.}
-#'   \item{projs}{Random directions employed to project \code{X.fdata}.}
-#'   \item{type.basis}{Type of basis for \code{est.method = "basis"}.}
-#'   \item{beta.est}{Estimated functional parameter \eqn{\hat\beta}{\hat\beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
-#'   \item{p}{Number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
-#'   \item{p.criterion}{Criterion employed for selecting \code{p}.}
-#'   \item{data.name}{The character string "Y = <X, b> + e"}
+#' \describe{
+#'   \item{\code{p.values.fdr}}{a matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
+#'   \item{\code{proj.statistics}}{a matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
+#'   \item{\code{boot.proj.statistics}}{an array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
+#'   \item{\code{proj.p.values}}{a matrix of size \code{c(n.proj, 2)}}
+#'   \item{\code{method}}{information about the test performed and the kind of estimation performed.}
+#'   \item{\code{B}}{number of bootstrap replicates used.}
+#'   \item{\code{n.proj}}{number of projections considered.}
+#'   \item{\code{projs}}{random directions employed to project \code{X.fdata}.}
+#'   \item{\code{type.basis}}{type of basis for \code{est.method = "basis"}.}
+#'   \item{\code{beta.est}}{estimated functional parameter \eqn{\hat \beta}{\hat \beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
+#'   \item{\code{p}}{number of basis elements considered for estimation of \eqn{\beta}{\beta}.}
+#'   \item{\code{p.criterion}}{criterion employed for selecting \code{p}.}
+#'   \item{\code{data.name}}{the character string "Y = <X, b> + e"}
 #' }
 #' @details
 #' No NA's are allowed neither in the functional covariate nor in the scalar response.

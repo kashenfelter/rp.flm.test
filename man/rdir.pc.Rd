@@ -33,9 +33,9 @@ with \eqn{h_j\sim\mathcal{N}(0, \sigma_j^2)}{h_j~N(0, \sigma_j^2)}, \eqn{j=1,\ld
 }
 \examples{
 # Simulate some data
-set.seed(34567)
-X.fdata <- r.ou(n = 50, mu = 0, alpha = 2, sigma = 1, t = seq(0, 1, l = 201), 
-                x0 = rep(0, 50))
+set.seed(345673)
+X.fdata <- r.ou(n = 200, mu = 0, alpha = 1, sigma = 2, t = seq(0, 1, l = 201), 
+                x0 = rep(0, 200))
 pc <- fdata2pc(X.fdata, ncomp = 20)
 
 # Samples
@@ -45,20 +45,39 @@ set.seed(34567)
 rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 
 # Comparison for the variance type
-par(mfrow = c(1, 1))
-plot(X.fdata, col = gray(0.75), lty = 1)
-lines(rdir.pc(n = 10, X.fdata = X.fdata), col = 2, lty = 1)
-lines(rdir.pc(n = 10, X.fdata = X.fdata, sd = FALSE), col = 4, lty = 1)
+set.seed(456732)
+n.proj <- 100
+samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = FALSE, ncomp = 0.9)
+samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = FALSE, ncomp = 0.9)
+samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = TRUE, ncomp = 0.9)
+samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = TRUE, ncomp = 0.9)
+par(mfrow = c(1, 2))
+plot(X.fdata, col = gray(0.85), lty = 1)
+lines(samp1[1:10], col = 2, lty = 1)
+lines(samp2[1:10], col = 4, lty = 1)
 legend("topleft", legend = c("Data", "Different variances", "Equal variances"), 
-       col = c(gray(0.5), 2, 4), lwd = 2)
- 
+       col = c(gray(0.85), 2, 4), lwd = 2)
+plot(X.fdata, col = gray(0.85), lty = 1)
+lines(samp3[1:10], col = 5, lty = 1)
+lines(samp4[1:10], col = 6, lty = 1)
+legend("topleft", legend = c("Data", "Different variances, normalized", 
+       "Equal variances, normalized"), col = c(gray(0.85), 5:6), lwd = 2)
+
+# Correlations (stronger with different variances and unnormalized; 
+# stronger with lower ncomp)
+ind <- lower.tri(matrix(nrow = n.proj, ncol = n.proj))
+median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp1[i]))))[ind])
+median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp2[i]))))[ind])
+median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp3[i]))))[ind])
+median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp4[i]))))[ind])
+
 # Comparison for the threshold
 samp1 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.25, fdata2pc.obj = pc)
 samp2 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.50, fdata2pc.obj = pc)
 samp3 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.90, fdata2pc.obj = pc)
 samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.95, fdata2pc.obj = pc)
 samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc)
-cols <- rainbow(5, alpha = 0.75)
+cols <- rainbow(5, alpha = 0.25)
 par(mfrow = c(3, 2))
 plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
 plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.25")
@@ -78,7 +97,7 @@ samp4 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.99, fdata2pc.obj = pc,
                  norm = TRUE)
 samp5 <- rdir.pc(n = 100, X.fdata = X.fdata, ncomp = 0.999, fdata2pc.obj = pc,
                  norm = TRUE)
-cols <- rainbow(5, alpha = 0.75)
+cols <- rainbow(5, alpha = 0.25)
 par(mfrow = c(3, 2))
 plot(X.fdata, col = gray(0.75), lty = 1, main = "Data")
 plot(samp1, col = cols[1], lty = 1, main = "Threshold = 0.50")
