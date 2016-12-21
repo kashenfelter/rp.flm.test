@@ -4,8 +4,8 @@
 \alias{rdir.pc}
 \title{Data-driven sampling of random directions guided by sample of functional data}
 \usage{
-rdir.pc(n, X.fdata, ncomp = 0.5, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
-  ncomp = min(length(X.fdata$argvals), nrow(X.fdata))), sd = TRUE,
+rdir.pc(n, X.fdata, ncomp = 0.95, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
+  ncomp = min(length(X.fdata$argvals), nrow(X.fdata))), sd = 1,
   zero.mean = TRUE, norm = FALSE)
 }
 \arguments{
@@ -17,11 +17,11 @@ rdir.pc(n, X.fdata, ncomp = 0.5, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
 
 \item{fdata2pc.obj}{output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.}
 
-\item{sd}{whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.}
+\item{sd}{if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.}
 
 \item{zero.mean}{wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.}
 
-\item{norm}{whether the samples should be L2-normalized.}
+\item{norm}{whether the samples should be L2-normalized or not.}
 }
 \value{
 A \code{\link[fda.usc]{fdata}} object with the sampled directions.
@@ -47,10 +47,14 @@ rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 # Comparison for the variance type
 set.seed(456732)
 n.proj <- 100
-samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = FALSE, ncomp = 0.9)
-samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = FALSE, ncomp = 0.9)
-samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = TRUE, ncomp = 0.9)
-samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = TRUE, ncomp = 0.9)
+set.seed(456732)
+samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.5)
+set.seed(456732)
+samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.5)
+set.seed(456732)
+samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.5)
+set.seed(456732)
+samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.5)
 par(mfrow = c(1, 2))
 plot(X.fdata, col = gray(0.85), lty = 1)
 lines(samp1[1:10], col = 2, lty = 1)

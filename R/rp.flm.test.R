@@ -10,9 +10,9 @@
 #' @param X.fdata an \code{\link[fda.usc]{fdata}} object used to compute the functional principal components.
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
-#' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
+#' @param sd if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.
 #' @param zero.mean wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
-#' @param norm whether the samples should be L2-normalized.
+#' @param norm whether the samples should be L2-normalized or not.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
@@ -30,10 +30,14 @@
 #' # Comparison for the variance type
 #' set.seed(456732)
 #' n.proj <- 100
-#' samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = FALSE, ncomp = 0.9)
-#' samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = FALSE, ncomp = 0.9)
-#' samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = TRUE, norm = TRUE, ncomp = 0.9)
-#' samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = FALSE, norm = TRUE, ncomp = 0.9)
+#' set.seed(456732)
+#' samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.5)
+#' set.seed(456732)
+#' samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.5)
+#' set.seed(456732)
+#' samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.5)
+#' set.seed(456732)
+#' samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.5)
 #' par(mfrow = c(1, 2))
 #' plot(X.fdata, col = gray(0.85), lty = 1)
 #' lines(samp1[1:10], col = 2, lty = 1)
@@ -90,10 +94,10 @@
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
-rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj = 
+rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj = 
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                              nrow(X.fdata))), 
-                    sd = TRUE, zero.mean = TRUE, norm = FALSE) {
+                    sd = 1, zero.mean = TRUE, norm = FALSE) {
   
   # Check fdata
   if (class(X.fdata) != "fdata") {
@@ -123,10 +127,18 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
     
   }
     
-  # Standard deviations of the scores of X.fdata on the eigenvectors
-  sdarg <- switch(sd + 1,
-                  rep(1, length(ncomp)),
-                  apply(ej$x[, ncomp], 2, sd))
+  # Standard deviations of the normal coefficients
+  if (sd == 0) {
+    
+    # Standard deviations of scores of X.fdata on the eigenvectors
+    sdarg <- apply(ej$x[, ncomp], 2, sd)
+    
+  } else {
+    
+    # Constant standard deviation
+    sdarg <- rep(sd, length(ncomp))
+    
+  }
 
   # Eigenvectors
   eigv <- ej$rotation[ncomp]
@@ -474,7 +486,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
                         p.criterion = "SICc", pmax = 10, p = NULL, 
                         type.basis = "bspline", B = 5000, n.proj = 10, 
-                        verbose = TRUE, projs = 0.5, same.rwild = FALSE, ...) {
+                        verbose = TRUE, projs = 0.95, same.rwild = FALSE, ...) {
   
   # Sample size
   n <- dim(X.fdata)[1]
@@ -726,7 +738,7 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
       
     }
     projs <- rdir.pc(n = n.proj, X.fdata = X.fdata, ncomp = projs, 
-                     fdata2pc.obj = pc.comp, sd = TRUE)
+                     fdata2pc.obj = pc.comp, sd = 1)
     
   } else {
     
