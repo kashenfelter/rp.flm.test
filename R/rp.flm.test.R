@@ -11,8 +11,9 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
-#' @param zero.mean wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
-#' @param norm whether the samples should be L2-normalized.
+#' @param sd (\code{TRUE/FALSE}) whether the variances \eqn{\sigma_j} are estimated by the variances of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to one.
+#' @param zero.mean (TRUE/FALSE) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
+#' @param norm (\code{TRUE/FALSE}) whether the projections should be L2-normalized.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
@@ -141,14 +142,15 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.5, fdata2pc.obj =
   # Normalize
   if (norm) {
   
-    rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
-      
+#    rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
+	rprojs$data <- sweep(rprojs$data,1,drop(fda.usc::norm.fdata(rprojs)),"/",check.MARGIN=FALSE)      
   }
   
   # Add mean
   if (!zero.mean) {
     
-    rprojs$data <- t(t(rprojs$data) + drop(ej$mean$data))
+#    rprojs$data <- t(t(rprojs$data) + drop(ej$mean$data))
+	rprojs$data <- sweep(rprojs$data,1,drop(ej$mean$data),"+",check.MARGIN=FALSE)      
     
   }
   
@@ -295,18 +297,18 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @param X.fdata functional observations in the class \code{\link[fda.usc]{fdata}}.
 #' @param Y scalar responses for the FLM. Must be a vector with the same number of elements as functions are in \code{X.fdata}.
 #' @param beta0.fdata functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.
+#' @param B number of bootstrap replicates to calibrate the distribution of the test statistic.
+#' @param n.proj vector with the number of projections to consider.
 #' @param est.method estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 #' \describe{
 #'   \item{\code{"pc"}}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
 #'   \item{\code{"pls"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pls}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pls.cv}} and the \code{p.criterion} criterion.}
 #'   \item{\code{"basis"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 #' }
+#' @param p number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.
 #' @param p.criterion for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.
 #' @param pmax maximum size of the basis expansion to consider in when using \code{p.criterion}.
-#' @param p number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.
 #' @param type.basis type of basis if \code{est.method = "basis"}.
-#' @param B number of bootstrap replicates to calibrate the distribution of the test statistic.
-#' @param n.proj vector with the number of projections to consider.
 #' @param verbose whether to show or not information about the testing progress.
 #' @param projs a \code{\link[fda.usc]{fdata}} object containing the random directions employed to project \code{X.fdata}. If numeric, the convenient value for \code{ncomp} in \code{\link{rdir.pc}}.
 #' @param same.rwild wether to employ the same wild bootstrap residuals for different projections or not.
@@ -471,10 +473,10 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
-rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
-                        p.criterion = "SICc", pmax = 10, p = NULL, 
-                        type.basis = "bspline", B = 5000, n.proj = 10, 
-                        verbose = TRUE, projs = 0.5, same.rwild = FALSE, ...) {
+rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10, 
+						est.method = "pc", p = NULL, p.criterion = "SICc", pmax = 10,  
+                        type.basis = "bspline", projs = 0.95, 
+                        verbose = TRUE,  same.rwild = FALSE, ...) {
   
   # Sample size
   n <- dim(X.fdata)[1]
