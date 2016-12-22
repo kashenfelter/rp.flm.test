@@ -11,13 +11,8 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.
-<<<<<<< HEAD
 #' @param zero.mean (\code{TRUE/FALSE}) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
 #' @param norm (\code{TRUE/FALSE}) whether the samples should be L2-normalized or not.
-=======
-#' @param zero.mean (\code{TRUE/FALSE}) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
-#' @param norm (\code{TRUE/FALSE}) whether the samples should be L2-normalized or not.
->>>>>>> origin/master
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
