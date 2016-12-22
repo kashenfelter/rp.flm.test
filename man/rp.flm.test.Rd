@@ -81,10 +81,10 @@ beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 
 # Test all cases
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000) #  p-value = 0.5000, p-value = 0.5889
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
-            p.criterion = fda.usc::GCV.S, B = 1000) #  p-value = 0.2, p-value = <2e-16
+            p.criterion = fda.usc::GCV.S, B = 1000)
 
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
