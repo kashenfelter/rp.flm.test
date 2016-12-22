@@ -11,8 +11,13 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.
+<<<<<<< HEAD
 #' @param zero.mean (\code{TRUE/FALSE}) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
 #' @param norm (\code{TRUE/FALSE}) whether the samples should be L2-normalized or not.
+=======
+#' @param zero.mean (\code{TRUE/FALSE}) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
+#' @param norm (\code{TRUE/FALSE}) whether the samples should be L2-normalized or not.
+>>>>>>> origin/master
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
@@ -31,13 +36,13 @@
 #' set.seed(456732)
 #' n.proj <- 100
 #' set.seed(456732)
-#' samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.5)
+#' samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.99)
 #' set.seed(456732)
-#' samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.5)
+#' samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.99)
 #' set.seed(456732)
-#' samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.5)
+#' samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.99)
 #' set.seed(456732)
-#' samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.5)
+#' samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.99)
 #' par(mfrow = c(1, 2))
 #' plot(X.fdata, col = gray(0.85), lty = 1)
 #' lines(samp1[1:10], col = 2, lty = 1)
@@ -354,10 +359,10 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 #'
 #' # Test all cases
-#' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000) #  p-value = 0.83, p-value = 0.75
-#' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000) #  p-value = 0.5000, p-value = 0.5889
+#' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
+#' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
-#'             p.criterion = fda.usc::GCV.S, B = 1000) #  p-value = 0.2, p-value = <2e-16
+#'             p.criterion = fda.usc::GCV.S, B = 1000)
 #'
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
@@ -643,8 +648,17 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
         meth <- paste(meth, "optimal", type.basis, "basis representation")
         
         # Choose the number of the bspline basis with GCV.S
+        if (type.basis == "fourier") {
+          
+          basis.x <- seq(1, pmax, by = 2)
+          
+        } else {
+          
+          basis.x <- 5:max(pmax, 5)
+          
+        }
         mod.basis <- fda.usc::fregre.basis.cv(fdataobj = X.fdata, y = Y,
-                                              basis.x = 5:max(pmax, 5),
+                                              basis.x = basis.x,
                                               basis.b = NULL,
                                               type.basis = type.basis,
                                               type.CV = p.criterion,
@@ -758,7 +772,6 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
   
   # Define required objects
   rp.stat.star <- array(NA, dim = c(n.proj, 2, B))
-  e.hat.star <- array(NA, dim = c(B, n.proj, n))
   if (verbose) {
     
     cat("Done.\nBootstrap calibration...\n ")
@@ -818,10 +831,10 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
       }
 
       # Residuals from the bootstrap estimated model (implicit column recycling)
-      e.hat.star[i, , ] <- t(t(e.hat) + drop(Y - e)) %*% lm.proj.X.matrix
+      e.hat.star <- t(t(e.hat) + drop(Y - e)) %*% lm.proj.X.matrix
       
       # Calculate the bootstrap statistics
-      rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star[i, , ],
+      rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star,
                                               proj.X.ord = rp.stat$proj.X.ord,
                                               F.code = TRUE)$statistic
       
@@ -843,18 +856,18 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
       # Generate bootstrap errors
       if (same.rwild) {
         
-        e.hat.star[i, , ] <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj,
+        e.hat.star <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj,
                                     ncol = n, byrow = TRUE)
         
       } else {
         
-        e.hat.star[i, , ] <- matrix(fda.usc::rwild(rep(e, n.proj), "golden"),
+        e.hat.star <- matrix(fda.usc::rwild(rep(e, n.proj), "golden"),
                                     nrow = n.proj, ncol = n, byrow = TRUE)
         
       }
       
       # Calculate the bootstrap statistics
-      rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star[i, , ],
+      rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star,
                                               proj.X.ord = rp.stat$proj.X.ord,
                                               F.code = TRUE)$statistic
       

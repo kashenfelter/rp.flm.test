@@ -19,7 +19,7 @@ rdir.pc(n, X.fdata, ncomp = 0.95, fdata2pc.obj = fda.usc::fdata2pc(X.fdata,
 
 \item{sd}{if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.}
 
-\item{zero.mean}{wheter the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.}
+\item{zero.mean}{whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.}
 
 \item{norm}{whether the samples should be L2-normalized or not.}
 }
@@ -48,13 +48,13 @@ rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 set.seed(456732)
 n.proj <- 100
 set.seed(456732)
-samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.5)
+samp1 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = FALSE, ncomp = 0.99)
 set.seed(456732)
-samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.5)
+samp2 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = FALSE, ncomp = 0.99)
 set.seed(456732)
-samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.5)
+samp3 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 1, norm = TRUE, ncomp = 0.99)
 set.seed(456732)
-samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.5)
+samp4 <- rdir.pc(n = n.proj, X.fdata = X.fdata, sd = 0, norm = TRUE, ncomp = 0.99)
 par(mfrow = c(1, 2))
 plot(X.fdata, col = gray(0.85), lty = 1)
 lines(samp1[1:10], col = 2, lty = 1)
