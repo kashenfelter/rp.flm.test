@@ -230,7 +230,7 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj =
 #'                  residuals = rbind(mod$residuals, mod$residuals * 2))$statistic
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' @useDynLib rp.flm.test
 #' @export
 rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE) {
@@ -480,7 +480,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 5000, n.proj = 10, 
