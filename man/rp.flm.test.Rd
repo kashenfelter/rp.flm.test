@@ -4,9 +4,9 @@
 \alias{rp.flm.test}
 \title{Goodness-of fit test for the functional linear model using random projections}
 \usage{
-rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
-  p.criterion = "SICc", pmax = 10, p = NULL, type.basis = "bspline",
-  B = 5000, n.proj = 10, verbose = TRUE, projs = 0.95,
+rp.flm.test(X.fdata, Y, beta0.fdata = NULL, B = 5000, n.proj = 10,
+  est.method = "pc", p = NULL, p.criterion = "SICc", pmax = 10,
+  type.basis = "bspline", projs = 0.95, verbose = TRUE,
   same.rwild = FALSE, ...)
 }
 \arguments{
@@ -16,6 +16,10 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
 
 \item{beta0.fdata}{functional parameter for the simple null hypothesis, in the \code{\link[fda.usc]{fdata}} class. The \code{argvals} and \code{rangeval} arguments of \code{beta0.fdata} must be the same of \code{X.fdata}. If \code{beta0.fdata=NULL} (default), the function will test for the composite null hypothesis.}
 
+\item{B}{number of bootstrap replicates to calibrate the distribution of the test statistic.}
+
+\item{n.proj}{vector with the number of projections to consider.}
+
 \item{est.method}{estimation method for \eqn{\beta}{\beta}, only used in the composite case. There are three methods:
 \describe{
   \item{\code{"pc"}}{if \code{p} is given, then \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.pc}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.pc.cv}} and the \code{p.criterion} criterion.}
@@ -23,21 +27,17 @@ rp.flm.test(X.fdata, Y, beta0.fdata = NULL, est.method = "pc",
   \item{\code{"basis"}}{if \code{p} is given, \eqn{\beta}{\beta} is estimated by \code{\link[fda.usc]{fregre.basis}}. Otherwise, \code{p} is chosen using \code{\link[fda.usc]{fregre.basis.cv}} and the \code{p.criterion} criterion. Both in \code{\link[fda.usc]{fregre.basis}} and \code{\link[fda.usc]{fregre.basis.cv}}, the same basis for \code{basis.x} and \code{basis.b} is considered.}
 }}
 
+\item{p}{number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.}
+
 \item{p.criterion}{for \code{est.method} equal to \code{"pc"} or \code{"pls"}, either \code{"SIC"}, \code{"SICc"} or one of the criterions described in \code{\link[fda.usc]{fregre.pc.cv}}. For \code{"basis"} a value for \code{type.CV} in \code{\link[fda.usc]{fregre.basis.cv}} such as \code{GCV.S}.}
 
 \item{pmax}{maximum size of the basis expansion to consider in when using \code{p.criterion}.}
 
-\item{p}{number of elements for the basis representation of \code{beta0.fdata} and \code{X.fdata} with the \code{est.method} (only composite hypothesis). If not supplied, it is estimated from the data.}
-
 \item{type.basis}{type of basis if \code{est.method = "basis"}.}
 
-\item{B}{number of bootstrap replicates to calibrate the distribution of the test statistic.}
-
-\item{n.proj}{vector with the number of projections to consider.}
+\item{projs}{a \code{\link[fda.usc]{fdata}} object containing the random directions employed to project \code{X.fdata}. If numeric, the convenient value for \code{ncomp} in \code{\link{rdir.pc}}.}
 
 \item{verbose}{whether to show or not information about the testing progress.}
-
-\item{projs}{a \code{\link[fda.usc]{fdata}} object containing the random directions employed to project \code{X.fdata}. If numeric, the convenient value for \code{ncomp} in \code{\link{rdir.pc}}.}
 
 \item{same.rwild}{wether to employ the same wild bootstrap residuals for different projections or not.}
 

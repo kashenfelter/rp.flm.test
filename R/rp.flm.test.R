@@ -11,8 +11,8 @@
 #' @param ncomp if an integer vector is provided, the index for the principal components to be considered. If a threshold between \code{0} and \code{1} is given, the number of components \eqn{k}{k} is determined automatically as the minimum number that explains at least the \code{ncomp} proportion of the total variance of \code{X.fdata}.
 #' @param fdata2pc.obj output of \code{\link[fda.usc]{fdata2pc}} containing as many components as the ones to be selected by \code{ncomp}. Otherwise, it is computed internally.
 #' @param sd if \code{0}, the standard deviations \eqn{\sigma_j} are estimated by the standard deviations of the scores for \eqn{e_j}. If not, the \eqn{\sigma_j}'s are set to \code{sd}.
-#' @param zero.mean (\code{TRUE/FALSE}) whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
-#' @param norm (\code{TRUE/FALSE}) whether the samples should be L2-normalized or not.
+#' @param zero.mean whether the projections should have zero mean. If not, the mean is set to the mean of \code{X.fdata}.
+#' @param norm whether the samples should be L2-normalized or not.
 #' @return A \code{\link[fda.usc]{fdata}} object with the sampled directions. 
 #' @examples
 #' # Simulate some data
@@ -152,17 +152,16 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj =
   
   # Normalize
   if (norm) {
-  
-#    rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
-	rprojs$data <- sweep(rprojs$data,1,drop(fda.usc::norm.fdata(rprojs)),"/",check.MARGIN=FALSE)      
+
+    rprojs$data <- rprojs$data / drop(fda.usc::norm.fdata(rprojs))
+
   }
   
   # Add mean
   if (!zero.mean) {
     
-#    rprojs$data <- t(t(rprojs$data) + drop(ej$mean$data))
-	rprojs$data <- sweep(rprojs$data,1,drop(ej$mean$data),"+",check.MARGIN=FALSE)      
-    
+    rprojs$data <- t(t(rprojs$data) + drop(ej$mean$data))
+
   }
   
   return(rprojs)
@@ -484,9 +483,9 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
-rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10, 
-						est.method = "pc", p = NULL, p.criterion = "SICc", pmax = 10,  
-                        type.basis = "bspline", projs = 0.95, 
+rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 5000, n.proj = 10, 
+                        est.method = "pc", p = NULL, p.criterion = "SICc", 
+                        pmax = 10, type.basis = "bspline", projs = 0.95, 
                         verbose = TRUE,  same.rwild = FALSE, ...) {
   
   # Sample size
@@ -527,25 +526,14 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
         meth <- paste(meth, "optimal PC basis representation")
         
         # Choose the number of basis elements
-        mod.pc <- fda.usc::fregre.pc.cv(fdataobj = X.fdata, y = Y, kmax = 1:pmax,
-                                        criteria = p.criterion)
-        p.opt <- length(mod.pc$pc.opt)
-        ord.opt <- mod.pc$pc.opt
+        mod <- fda.usc::fregre.pc.cv(fdataobj = X.fdata, y = Y, kmax = 1:pmax,
+                                     criteria = p.criterion)
+        p.opt <- length(mod$pc.opt)
+        ord.opt <- mod$pc.opt
         
-        # PC components to be passed to the bootstrap
-        pc.comp <- mod.pc$fregre.pc$fdata.comp
-        pc.comp$l <- mod.pc$pc.opt
-        
-        # Express X.fdata and beta.est in the PC basis
-        mdata <- mod.pc$fregre.pc$fdata.comp$x[, mod.pc$fregre.pc$l] %*%
-          mod.pc$fregre.pc$fdata.comp$rotation$data[mod.pc$fregre.pc$l, , drop = FALSE]
-        X.est <- fda.usc::fdata(mdata = mdata, argvals = X.fdata$argvals,
-                                rangeval = X.fdata$rangeval)
-        beta.est <- mod.pc$fregre.pc$beta.est
-        norm.beta.est <- fda.usc::norm.fdata(beta.est)
-        
-        # Compute the residuals
-        e <- mod.pc$fregre.pc$residuals
+        # Return the best model
+        mod <- mod$fregre.pc
+        pc.comp <- mod$fdata.comp
         
       # Fixed p
       } else {
@@ -554,24 +542,10 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
         meth <- paste(meth, " a representation in a PC basis of ", p, "elements")
         
         # Estimation of beta on the given fixed basis
-        mod.pc <- fda.usc::fregre.pc(fdataobj = X.fdata, y = Y, l = 1:p)
+        mod <- fda.usc::fregre.pc(fdataobj = X.fdata, y = Y, l = 1:p)
+        pc.comp <- mod$fdata.comp
         p.opt <- p
-        ord.opt <- mod.pc$l
-        
-        # PC components to be passed to the bootstrap
-        pc.comp <- mod.pc$fdata.comp
-        pc.comp$l <- mod.pc$l
-        
-        # Express X.fdata and beta.est in the basis
-        mdata <- mod.pc$fdata.comp$x[, mod.pc$l] %*%
-          mod.pc$fdata.comp$rotation$data[mod.pc$l, , drop = FALSE]
-        X.est <- fda.usc::fdata(mdata = mdata, argvals = X.fdata$argvals,
-                                rangeval = X.fdata$rangeval)
-        beta.est <- mod.pc$beta.est
-        norm.beta.est <- fda.usc::norm.fdata(beta.est)
-        
-        # Compute the residuals
-        e <- mod.pc$residuals
+        ord.opt <- mod$l
         
       }
       
@@ -585,25 +559,13 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
         meth <- paste(meth, "optimal PLS basis representation")
         
         # Choose the number of the basis: SIC is probably the best criteria
-        mod.pls <- fda.usc::fregre.pls.cv(fdataobj = X.fdata, y = Y, kmax = pmax,
-                                          criteria = p.criterion)
-        p.opt <- length(mod.pls$pls.opt)
-        ord.opt <- mod.pls$pls.opt
+        mod <- fda.usc::fregre.pls.cv(fdataobj = X.fdata, y = Y, kmax = pmax,
+                                      criteria = p.criterion)
+        p.opt <- length(mod$pls.opt)
+        ord.opt <- mod$pls.opt
         
-        # PLS components to be passed to the bootstrap
-        pls.comp <- mod.pls$fregre.pls$fdata.comp
-        pls.comp$l <- mod.pls$pls.opt
-        
-        # Express X.fdata and beta.est in the PLS basis
-        mdata <- mod.pls$fregre.pls$fdata.comp$x[, mod.pls$fregre.pls$l] %*%
-          mod.pls$fregre.pls$fdata.comp$rotation$data[mod.pls$fregre.pls$l, , drop = FALSE]
-        X.est <- fda.usc::fdata(mdata = mdata, argvals = X.fdata$argvals,
-                                rangeval = X.fdata$rangeval)
-        beta.est <- mod.pls$fregre.pls$beta.est
-        norm.beta.est <- fda.usc::norm.fdata(beta.est)
-        
-        # Compute the residuals
-        e <- mod.pls$fregre.pls$residuals
+        # Return the best model
+        mod <- mod$fregre.pls
         
       # Fixed p
       } else {
@@ -612,24 +574,9 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
         meth <- paste(meth, "a representation in a PLS basis of ", p, "elements")
         
         # Estimation of beta on the given fixed basis
-        mod.pls <- fda.usc::fregre.pls(fdataobj = X.fdata, y = Y, l = 1:p)
+        mod <- fda.usc::fregre.pls(fdataobj = X.fdata, y = Y, l = 1:p)
         p.opt <- p
-        ord.opt <- mod.pls$l
-        
-        # PLS components to be passed to the bootstrap
-        pls.comp <- mod.pls$fdata.comp
-        pls.comp$l <- mod.pls$l
-        
-        # Express X.fdata and beta.est in the basis
-        mdata <- mod.pls$fdata.comp$x[, mod.pls$l] %*%
-          mod.pls$fdata.comp$rotation$data[mod.pls$l, , drop = FALSE]
-        X.est <- fda.usc::fdata(mdata = mdata, argvals = X.fdata$argvals,
-                                rangeval = X.fdata$rangeval)
-        beta.est <- mod.pls$beta.est
-        norm.beta.est <- fda.usc::norm.fdata(beta.est)
-        
-        # Compute the residuals
-        e <- mod.pls$residuals
+        ord.opt <- mod$l
         
       }
       
@@ -652,23 +599,14 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
           basis.x <- 5:max(pmax, 5)
           
         }
-        mod.basis <- fda.usc::fregre.basis.cv(fdataobj = X.fdata, y = Y,
-                                              basis.x = basis.x,
-                                              basis.b = NULL,
-                                              type.basis = type.basis,
-                                              type.CV = p.criterion,
-                                              verbose = FALSE, ...)
-        p.opt <- mod.basis$basis.x.opt$nbasis
+        mod <- fda.usc::fregre.basis.cv(fdataobj = X.fdata, y = Y, 
+                                        basis.x = basis.x, basis.b = NULL,
+                                        type.basis = type.basis, 
+                                        type.CV = p.criterion, verbose = FALSE, 
+                                        ...)
+        p.opt <- mod$basis.x.opt$nbasis
         ord.opt <- 1:p.opt
-        
-        # Express X.fdata and beta.est in the optimal basis
-        X.est <- mod.basis$x.fd
-        beta.est <- mod.basis$beta.est
-        norm.beta.est <- fda.usc::norm.fd(beta.est)
-        
-        # Compute the residuals
-        e <- mod.basis$residuals
-        
+
       # Fixed p
       } else {
         
@@ -681,19 +619,10 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
                                           ".basis", sep = ""),
                              args = list(rangeval = X.fdata$rangeval,
                                          nbasis = p, ...))
-        mod.basis <- fda.usc::fregre.basis(fdataobj = X.fdata, y = Y,
-                                           basis.x = basis.opt,
-                                           basis.b = basis.opt)
+        mod <- fda.usc::fregre.basis(fdataobj = X.fdata, y = Y, 
+                                     basis.x = basis.opt, basis.b = basis.opt)
         p.opt <- p
         ord.opt <- 1:p.opt
-        
-        # Express X.fdata and beta.est in the basis
-        X.est <- mod.basis$x.fd
-        beta.est <- mod.basis$beta.est
-        norm.beta.est <- fda.usc::norm.fd(beta.est)
-        
-        # Compute the residuals
-        e <- mod.basis$residuals
         
       }
       
@@ -702,6 +631,15 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
       stop(paste("Estimation method", est.method, "not implemented."))
       
     }
+    
+    # Estimated beta
+    beta.est <- mod$beta.est
+    
+    # Hat matrix
+    H <- mod$H
+    
+    # Residuals
+    e <- mod$residuals
     
   # Simple hypothesis
   } else {
@@ -777,37 +715,10 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
   # Composite hypothesis
   if (is.null(beta0.fdata)) {
     
-    # Calculate the design matrix of the linear model depending on the chosen basis
-    # This allows to resample efficiently the residuals without re-estimating
-    # again the beta
-    
-    # PC
-    if (est.method == "pc") {
-      
-      # Design matrix for the PC estimation
-      X.matrix <- switch(p.data.driven + 1L,
-                         mod.pc$lm$x,
-                         mod.pc$fregre.pc$lm$x)
-      
-    # PLS
-    } else if (est.method == "pls") {
-      
-      # Design matrix for the PLS estimation
-      X.matrix <- switch(p.data.driven + 1L,
-                         mod.pls$lm$x,
-                         mod.pls$fregre.pls$lm$x)
-      
-    # Deterministic basis
-    } else if (est.method == "basis") {
-      
-      # Design matrix for the basis estimation
-      X.matrix <- mod.basis$lm$x
-      
-    }
-    
-    # Projection matrix of the linear model
-    lm.proj.X.matrix <- diag(rep(1, n)) -
-      X.matrix %*% solve(crossprod(X.matrix)) %*% t(X.matrix)
+    # Calculate the matrix that gives the residuals of the linear model 
+    # from the observed response. This allows to resample efficiently the 
+    # residuals without re-estimating again the beta
+    Y.to.residuals.matrix <- diag(rep(1, n)) - H
     
     # Bootstrap resampling
     for (i in 1:B) {
@@ -815,18 +726,19 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
       # Generate bootstrap errors
       if (same.rwild) {
         
-        e.hat <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj, ncol = n,
+        e.star <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj, ncol = n,
                         byrow = TRUE)
         
       } else {
         
-        e.hat <- matrix(fda.usc::rwild(rep(e, n.proj), "golden"), nrow = n.proj,
+        e.star <- matrix(fda.usc::rwild(rep(e, n.proj), "golden"), nrow = n.proj,
                         ncol = n, byrow = TRUE)
         
       }
 
       # Residuals from the bootstrap estimated model (implicit column recycling)
-      e.hat.star <- t(t(e.hat) + drop(Y - e)) %*% lm.proj.X.matrix
+      Y.star <- t(t(e.star) + drop(Y - e))
+      e.hat.star <- Y.star %*% Y.to.residuals.matrix
       
       # Calculate the bootstrap statistics
       rp.stat.star[, , i] <- rp.flm.statistic(residuals = e.hat.star,
@@ -852,12 +764,12 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
       if (same.rwild) {
         
         e.hat.star <- matrix(fda.usc::rwild(e, "golden"), nrow = n.proj,
-                                    ncol = n, byrow = TRUE)
+                             ncol = n, byrow = TRUE)
         
       } else {
         
         e.hat.star <- matrix(fda.usc::rwild(rep(e, n.proj), "golden"),
-                                    nrow = n.proj, ncol = n, byrow = TRUE)
+                             nrow = n.proj, ncol = n, byrow = TRUE)
         
       }
       
@@ -877,27 +789,25 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, , B = 5000, n.proj = 10,
     
   }
   
-  # Compute the p-values
-  pval <- matrix(nrow = n.proj, ncol = 2)
-  for (i in 1:n.proj) {
+  # Compute the p-values of the projected tests
+  pval <- t(sapply(1:n.proj, function(i) {
     
-    pval[i, 1] <- mean(rp.stat$statistic[i, 1] <= rp.stat.star[i, 1, ]) # CvM
-    pval[i, 2] <- mean(rp.stat$statistic[i, 2] <= rp.stat.star[i, 2, ]) # KS
+    c(mean(rp.stat$statistic[i, 1] <= rp.stat.star[i, 1, ]), 
+      mean(rp.stat$statistic[i, 2] <= rp.stat.star[i, 2, ]))
     
-  }
+    }))
   
   # Compute p-values depending for the vector of projections
-  rp.pvalue <- matrix(nrow = length(vec.nproj), ncol = 2)
-  for (k in seq_along(vec.nproj)) {
+  rp.pvalue <- t(sapply(seq_along(vec.nproj), function(k) {
     
-    rp.pvalue[k, ] <- apply(pval[1:vec.nproj[k], , drop = FALSE], 2, function(x) {
+    apply(pval[1:vec.nproj[k], , drop = FALSE], 2, function(x) {
       
       l <- length(x)
       return(min(l / (1:l) * sort(x)))
       
     })
     
-  }
+  }))
   colnames(rp.pvalue) <- colnames(pval) <- c("CvM", "KS")
   rownames(rp.pvalue) <- vec.nproj
   
