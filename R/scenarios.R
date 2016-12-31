@@ -300,19 +300,24 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 #' @param times flag to indicate whether to show the time employed computing each model.
 #' @param M number of samples employed to estimate the densities of the response.
 #' @param est.beta flag to indicate whether to plot the functional coefficient estimate.
+#' @param main whether to show a caption indicating the scenario or not.
 #' @return Nothing. The functions are called for producing diagnostic plots.
 #' @examples
+#' \dontrun{
 #' # Check scenarios and deviations
-#' check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE)
-#'
+#' set.seed(3257641)
+#' check.scenarios(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
+#' 
 #' # Check betas
-#' check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
+#' set.seed(3257641)
+#' check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), n = 100)
+#' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
 check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
-                            R2 = 0.95, M = 1e3) {
+                            R2 = 0.95, M = 1e3, main = FALSE) {
 
-  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(5, 4, 4, 2) + 0.1)
+  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(4, 4, 1.5, 1) + 0.1)
   for (k in scenarios) {
 
     # Response densities
@@ -334,8 +339,8 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
     }
     
     # Plot
-    plot(d0, type = "l", lwd = 2, main = paste("Scenario", k), xlab = "", ylab = "",
-         ylim = c(0, max(d0$y, d1$y, d2$y) * 1.2))
+    plot(d0, type = "l", lwd = 2, main = ifelse(main, paste("Scenario", k), ""), 
+         xlab = "", ylab = "", ylim = c(0, max(d0$y, d1$y, d2$y) * 1.2))
     title(xlab = expression(Y == paste(symbol("\xe1"), list(X, rho),
                                        symbol("\xf1")) + delta[k] * m(X) + epsilon),
           ylab = "Density", cex.lab = 1.25, cex.main = 1.25)
@@ -351,18 +356,18 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
 
 #' @rdname check.scenarios
 #' @export
-check.betas <- function(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = TRUE, 
-                        est.beta = TRUE) {
+check.betas <- function(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE, 
+                        est.beta = TRUE, main = FALSE) {
 
-  mar <- c(3, 2.5, 2, 2.5) + 0.1
-  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(5, 4, 4, 2) + 0.1)
+  mar <- c(2, 2, 1, 2) + 0.1
+  par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(4, 4, 1.5, 1) + 0.1)
   for (k in scenarios) {
 
     # Sample
     t <- proc.time()[3]
-    samp <- r.mod(n = 100, scenario = k, delta = 0, composite = composite, R2 = R2)
+    samp <- r.mod(n = n, scenario = k, delta = 0, composite = TRUE, R2 = R2)
 
-    # Estimate beta from 100 samples
+    # Estimate beta from n samples
     if (est.beta) {
       
       beta.est <- fda.usc::fregre.pc.cv(fdataobj = samp$X.fdata, y = samp$Y, 
@@ -382,7 +387,7 @@ check.betas <- function(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = T
                          rx = samp$X.fdata$argvals, ry = samp$X.fdata$data[1, ],
                          xlab = "", rylab = "", ylab = "", lylim = lylim,
                          rylim = rylim, type = "n", lcol = 1, rcol = gray(0.5),
-                         mar = mar)
+                         mar = mar, main = ifelse(main, paste("Scenario", k), ""))
 
     # Theoretical beta
     lines(samp$beta.fdata, ylim = lylim, lwd = 2, col = 1)

@@ -6,10 +6,10 @@
 \title{Check density of the responses and functional processes}
 \usage{
 check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE,
-  R2 = 0.95, M = 1000)
+  R2 = 0.95, M = 1000, main = FALSE)
 
-check.betas(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = TRUE,
-  est.beta = TRUE)
+check.betas(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE,
+  est.beta = TRUE, main = FALSE)
 }
 \arguments{
 \item{scenarios}{a vector giving the simulation scenarios to be checked.}
@@ -22,6 +22,10 @@ check.betas(scenarios = 1:12, composite = TRUE, R2 = 0.95, times = TRUE,
 
 \item{M}{number of samples employed to estimate the densities of the response.}
 
+\item{main}{whether to show a caption indicating the scenario or not.}
+
+\item{n}{the sample size.}
+
 \item{est.beta}{flag to indicate whether to plot the functional coefficient estimate.}
 }
 \value{
@@ -31,11 +35,15 @@ Nothing. The functions are called for producing diagnostic plots.
 \code{check.scenarios} produces plots displaying th densities of the response for different deviations. \code{check.betas} displays a sample of the functional process, the functional coefficient associated and its estimation based on 100 observations.
 }
 \examples{
+\dontrun{
 # Check scenarios and deviations
-check.scenarios(scenarios = 1:12, composite = TRUE, times = TRUE)
+set.seed(3257641)
+check.scenarios(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
 
 # Check betas
-check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
+set.seed(3257641)
+check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), n = 100)
+}
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
