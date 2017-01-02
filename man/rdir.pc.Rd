@@ -44,6 +44,7 @@ rdir.pc(n = 5, X.fdata = X.fdata, zero.mean = FALSE)$data[, 1:5]
 set.seed(34567)
 rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 
+\dontrun{
 # Comparison for the variance type
 set.seed(456732)
 n.proj <- 100
@@ -109,6 +110,7 @@ plot(samp2, col = cols[2], lty = 1, main = "Threshold = 0.90")
 plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.95")
 plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.99")
 plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
+}
 }
 \author{
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@usc.es}).

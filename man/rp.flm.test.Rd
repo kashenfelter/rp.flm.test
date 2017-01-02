@@ -6,7 +6,7 @@
 \alias{rp.flm.test-package}
 \title{rp.flm.test - Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes}
 \usage{
-rp.flm.test(X.fdata, Y, beta0.fdata = NULL, B = 5000, n.proj = 10,
+rp.flm.test(X.fdata, Y, beta0.fdata = NULL, B = 1000, n.proj = 10,
   est.method = "pc", p = NULL, p.criterion = "SICc", pmax = 10,
   type.basis = "bspline", projs = 0.95, verbose = TRUE,
   same.rwild = FALSE, ...)
@@ -64,7 +64,7 @@ An object with class \code{"htest"} whose underlying structure is a list contain
 }
 }
 \description{
-Package companion for the paper "Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes" (Cuesta-Albertos et al., 2016). The package implements goodness-of-fit tests for the functional linear model with scalar response.
+Package companion for the paper "Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes" (Cuesta-Albertos et al., 2017). The package implements goodness-of-fit tests for the functional linear model with scalar response.
 
 Tests the composite null hypothesis of a Functional Linear Model with scalar response (FLM),
 \deqn{H_0:\,Y=\langle X,\beta\rangle+\epsilon\quad\mathrm{vs}\quad H_1:\,Y\neq\langle X,\beta\rangle+\epsilon.}{H_0: Y = <X, \beta> + \epsilon vs H_1: Y != <X, \beta> + \epsilon.}
@@ -217,9 +217,10 @@ Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}) and Manuel Febrero-
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@usc.es}).
 }
 \references{
-Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
 
-Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
+
 Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 }
 

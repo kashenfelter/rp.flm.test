@@ -57,6 +57,7 @@ Manuel Febrero-Bande (\email{manuel.febrero@usc.es}) and Eduardo Garcia-Portugue
 }
 \references{
 Cardot, H., Ferraty, F., Sarda, P. (2003) Spline estimators for the functional linear model. Statistica Sinica, 13(3), 571--592. \url{http://www3.stat.sinica.edu.tw/statistica/oldpdf/a13n31.pdf}
+
 Hall, P. and Hosseini-Nasab, M. (2006) On properties of functional principal components analysis. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 68(1), 109--126. \url{http://dx.doi.org/10.1111/j.1467-9868.2005.00535.x}
 }
 

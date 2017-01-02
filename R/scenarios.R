@@ -2,7 +2,7 @@
 
 #' @title Functional regression models for simple and composite hypothesis
 #'
-#' @description Sampling from the functional linear models considered in the simulation study of Cuesta-Albertos et al. (2016).
+#' @description Sampling from the functional linear models considered in the simulation study of Cuesta-Albertos et al. (2017).
 #'
 #' @param n the sample size.
 #' @param t time locations for the functional data.
@@ -18,7 +18,7 @@
 #' }
 #' @details The samples are generated from the regression model
 #' \deqn{Y = \langle \mathcal{X}, \beta\rangle + \delta m(\mathcal{X})+\varepsilon,}{Y = <X, \beta> + \delta m(X)+\varepsilon,}
-#' where \eqn{\delta m(\mathcal{X})}{\delta m(X)} is computed by \code{\link{m.dev}}. The description of the scenarios is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
+#' where \eqn{\delta m(\mathcal{X})}{\delta m(X)} is computed by \code{\link{m.dev}}. The description of the scenarios is detailed in the supplementary material of Cuesta-Albertos et al. (2017).
 #' @examples
 #' # Generate samples for all scenarios
 #' samp <- list()
@@ -31,9 +31,9 @@
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
 #' @export
-r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95, 
+r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
                   composite = TRUE) {
 
   # Check for delta
@@ -204,7 +204,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
                 0.54664892, 0.04646039, 0.18827926,
                 0.33637279, 3.43004737, 5.62054178,
                 76.674612, 1.385866)
-  
+
   # Response
   Y <- drop(fda.usc::inprod.fdata(X.fdata, beta0))
   noise <- rnorm(n, mean = 0, sd = sqrt(s2y * (1/ R2 - 1)))
@@ -217,14 +217,14 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
 #' @title Deviations from functional linearity
 #'
-#' @description Deviations fromfunctional linearity considered in the simulation study of Cuesta-Albertos et al. (2016).
+#' @description Deviations from functional linearity considered in the simulation study of Cuesta-Albertos et al. (2017).
 #'
 #' @inheritParams rp.flm.test
 #' @param type kind of deviation, an index from \code{1} to \code{5}.
 #' @inheritParams r.mod
 #' @param eta functional parameter employed when \code{type = 4}.
 #' @return A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
-#' @details The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
+#' @details The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2017).
 #' @examples
 #' dev <- list()
 #' k <- 1
@@ -238,7 +238,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
 #' @export
 m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 
@@ -256,7 +256,7 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
     } else if (type == 2) {
 
       # Quadratic model
-      B <- 25 * outer(fda.usc::argvals(X.fdata), fda.usc::argvals(X.fdata), 
+      B <- 25 * outer(fda.usc::argvals(X.fdata), fda.usc::argvals(X.fdata),
                  function(s, t) sin(2 * pi * t * s) * s * (1 - s) * t * (1 - t))
       Y <- diag(X.fdata$data %*% B %*% t(X.fdata$data)) * diff(X.fdata$argvals[1:2])^2
 
@@ -307,14 +307,14 @@ m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 #' # Check scenarios and deviations
 #' set.seed(3257641)
 #' check.scenarios(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
-#' 
+#'
 #' # Check betas
 #' set.seed(3257641)
 #' check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), n = 100)
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @export
-check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE, 
+check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
                             R2 = 0.95, M = 1e3, main = FALSE) {
 
   par(mfrow = c(3, ceiling(length(scenarios) / 3L)), mar = c(4, 4, 1.5, 1) + 0.1)
@@ -333,13 +333,13 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
                         R2 = R2)$Y, bw = "SJ")
     set.seed(12456789)
     if (times) {
-      
+
       cat("Scenario", k, "finished in", proc.time()[3] - t, "secs\n")
 
     }
-    
+
     # Plot
-    plot(d0, type = "l", lwd = 2, main = ifelse(main, paste("Scenario", k), ""), 
+    plot(d0, type = "l", lwd = 2, main = ifelse(main, paste("Scenario", k), ""),
          xlab = "", ylab = "", ylim = c(0, max(d0$y, d1$y, d2$y) * 1.2))
     title(xlab = expression(Y == paste(symbol("\xe1"), list(X, rho),
                                        symbol("\xf1")) + delta[k] * m(X) + epsilon),
@@ -356,7 +356,7 @@ check.scenarios <- function(scenarios = 1:12, composite = TRUE, times = TRUE,
 
 #' @rdname check.scenarios
 #' @export
-check.betas <- function(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE, 
+check.betas <- function(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE,
                         est.beta = TRUE, main = FALSE) {
 
   mar <- c(2, 2, 1, 2) + 0.1
@@ -369,17 +369,17 @@ check.betas <- function(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE,
 
     # Estimate beta from n samples
     if (est.beta) {
-      
-      beta.est <- fda.usc::fregre.pc.cv(fdataobj = samp$X.fdata, y = samp$Y, 
+
+      beta.est <- fda.usc::fregre.pc.cv(fdataobj = samp$X.fdata, y = samp$Y,
                                         kmax = 10, criteria = "SICc")$fregre.pc$beta.est
-      
+
     }
     if (times) {
-      
+
       cat("Model", k, "finished in", proc.time()[3] - t, "secs\n")
-      
+
     }
-    
+
     # Create two axis plot
     lylim <- range(samp$beta.fdata$data) + c(-1, 1)
     rylim <- range(samp$X.fdata$data) + c(-1, 1)
@@ -394,11 +394,11 @@ check.betas <- function(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE,
 
     # Plot beta estimate
     if (est.beta) {
-      
+
       lines(beta.est, ylim = lylim, lwd = 2, col = 2)
 
     }
-    
+
     # Add functional data
     for (i in 1:20) {
 

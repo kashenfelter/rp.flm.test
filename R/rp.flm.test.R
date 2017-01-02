@@ -27,6 +27,7 @@
 #' set.seed(34567)
 #' rdir.pc(n = 5, X.fdata = X.fdata, fdata2pc.obj = pc)$data[, 1:5]
 #' 
+#' \dontrun{
 #' # Comparison for the variance type
 #' set.seed(456732)
 #' n.proj <- 100
@@ -92,6 +93,7 @@
 #' plot(samp3, col = cols[3], lty = 1, main = "Threshold = 0.95")
 #' plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.99")
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
+#' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
 rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj = 
@@ -230,7 +232,7 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj =
 #'                  residuals = rbind(mod$residuals, mod$residuals * 2))$statistic
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
 #' @useDynLib rp.flm.test
 #' @export
 rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE) {
@@ -480,10 +482,11 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
+#' 
 #' Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2014). A goodness-of-fit test for the functional linear model with scalar response. Journal of Computational and Graphical Statistics, 23(3), 761--778. \url{http://dx.doi.org/10.1080/10618600.2013.812519}
 #' @export
-rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 5000, n.proj = 10, 
+rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 1000, n.proj = 10, 
                         est.method = "pc", p = NULL, p.criterion = "SICc", 
                         pmax = 10, type.basis = "bspline", projs = 0.95, 
                         verbose = TRUE,  same.rwild = FALSE, ...) {

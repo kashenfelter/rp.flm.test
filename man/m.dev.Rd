@@ -21,10 +21,10 @@ m.dev(X.fdata, type, delta, eta, composite = TRUE)
 A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
 }
 \description{
-Deviations fromfunctional linearity considered in the simulation study of Cuesta-Albertos et al. (2016).
+Deviations from functional linearity considered in the simulation study of Cuesta-Albertos et al. (2017).
 }
 \details{
-The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2016).
+The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2017).
 }
 \examples{
 dev <- list()
@@ -42,6 +42,6 @@ for (i in 1:5) {
 Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
 }
 \references{
-Cuesta-Albertos, J.A., Garcia-Portugues, E., Gonzalez-Manteiga, W. and Febrero-Bande, M. (2016). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv XXXX:XXXX. \url{https://arxiv.org/abs/XXXX.XXXX}
+Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
 }
 
