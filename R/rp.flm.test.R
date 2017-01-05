@@ -99,7 +99,7 @@
 rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj = 
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals), 
                                                              nrow(X.fdata))), 
-                    sd = 1, zero.mean = TRUE, norm = FALSE) {
+                    sd = 0, zero.mean = TRUE, norm = FALSE) {
   
   # Check fdata
   if (class(X.fdata) != "fdata") {
@@ -488,7 +488,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @export
 rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 1000, n.proj = 10, 
                         est.method = "pc", p = NULL, p.criterion = "SICc", 
-                        pmax = 10, type.basis = "bspline", projs = 0.95, 
+                        pmax = 20, type.basis = "bspline", projs = 0.95, 
                         verbose = TRUE,  same.rwild = FALSE, ...) {
   
   # Sample size

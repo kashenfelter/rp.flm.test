@@ -4,9 +4,9 @@
 #' 
 #' @description The functions \code{r.cfs.2003}, \code{r.hh.2006} and \code{r.bridge} sample the functional covariate and construct functional coefficients for their use in functional linear models:
 #' \itemize{
-#'   \item{\code{r.cfs.2003}}{implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
-#'   \item{\code{r.hh.2006}}{gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
-#'   \item{\code{r.bridge}}{samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{sqrt(2) * sin(k*t*\pi)}.}
+#'   \item{\code{r.cfs.2003} implements examples (a) and (b) in Section 5 of Cardot et al. (2003).}
+#'   \item{\code{r.hh.2006} gives models (i), (ii) and (iii) in Section 5 of Hall and Housseini-Nasab (2006).}
+#'   \item{\code{r.bridge} samples a Brownian motion and creates a functional coefficient constructed from the eigenfunctions \eqn{\sqrt(2) * \sin(k t \pi)}{\sqrt2 * sin(k*t*\pi)}.}
 #' }
 #' @param n number of functions to sample.
 #' @inheritParams r.mod

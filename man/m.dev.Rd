@@ -18,7 +18,7 @@ m.dev(X.fdata, type, delta, eta, composite = TRUE)
 \item{composite}{flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).}
 }
 \value{
-A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
+A vector of length \code{length(X.fdata)} containing \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
 }
 \description{
 Deviations from functional linearity considered in the simulation study of Cuesta-Albertos et al. (2017).

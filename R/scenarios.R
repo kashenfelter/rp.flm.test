@@ -46,7 +46,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
   # Different models with deviations
   if (scenario == 1) {
 
-    # M1: example (a) of CFS 2003c, R2 = 0.95, three PC (1, 2, 3)
+    # S1: example (a) of CFS 2003, R2 = 0.95, three PC (1, 2, 3)
     b <- c(2, 4, 5) / sqrt(2)
     cfs <- r.cfs.2003(n = n, t = t, b = b, type = "a")
     X.fdata <- cfs$X.fdata
@@ -57,7 +57,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 2) {
 
-    # M2: example (a) of CFS 2003c, R2 = 0.95, three PC (3, 5, 7)
+    # S2: example (a) of CFS 2003, R2 = 0.95, three PC (3, 5, 7)
     b <- c(0, 0, 2, 0, 4, 0, 5) / sqrt(2)
     cfs <- r.cfs.2003(n = n, t = t, b = b, type = "a")
     X.fdata <- cfs$X.fdata
@@ -68,7 +68,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 3) {
 
-    # M3: example (a) of CFS 2003c, R2 = 0.95, three PC (2, 3, 7)
+    # S3: example (a) of CFS 2003, R2 = 0.95, three PC (2, 3, 7)
     b <- c(0, 2, 4, 0, 0, 0, 5) / sqrt(2)
     cfs <- r.cfs.2003(n = n, t = t, b = b, type = "a")
     X.fdata <- cfs$X.fdata
@@ -79,7 +79,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 4) {
 
-    # M4: example b of CFS 2003, beta = log(15 * t^2 + 10) + cos(4 * pi * t)
+    # S4: example b of CFS 2003, beta = log(15 * t^2 + 10) + cos(4 * pi * t)
     cfs <- r.cfs.2003(n = n, t = t, type = "b")
     X.fdata <- cfs$X.fdata
     beta0 <- cfs$beta.fdata
@@ -89,7 +89,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 5) {
 
-    # M5: example Hall and Hoseini, imod = 1
+    # S5: example Hall and Hoseini, imod = 1
     hh <- r.hh.2006(n = n, t = t, imod = 1)
     X.fdata <- hh$X.fdata
     beta0 <- hh$beta.fdata
@@ -99,7 +99,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 6) {
 
-    # M6: example Hall & Hoseini, imod = 2
+    # S6: example Hall & Hoseini, imod = 2
     hh <- r.hh.2006(n = n, t = t, imod = 2)
     X.fdata <- hh$X.fdata
     beta0 <- hh$beta.fdata
@@ -109,7 +109,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 7) {
 
-    # M7: brownian bridge with exact representation in the three first PC, R2 = 0.95
+    # S7: brownian bridge with exact representation in the three first PC, R2 = 0.95
     bridge <- r.bridge(n = n, t = t, b = c(2, 4, 5) / sqrt(2))
     X.fdata <- bridge$X.fdata
     beta0 <- bridge$beta.fdata
@@ -119,7 +119,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 8) {
 
-    # M8: Ornstein-Uhlenbeck and quadratic deviation I as in G-P, F-B and G-M (2014)
+    # S8: Ornstein-Uhlenbeck and quadratic deviation I as in G-P, F-B and G-M (2014)
     X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = sin(2 * pi * t) - cos(2 * pi * t),
                             argvals = t)
@@ -129,7 +129,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 9) {
 
-    # M9: Ornstein-Uhlenbeck and quadratic deviation II as in G-P, F-B and G-M (2014)
+    # S9: Ornstein-Uhlenbeck and quadratic deviation II as in G-P, F-B and G-M (2014)
     X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = t - (t - 0.75)^2, argvals = t)
 
@@ -138,7 +138,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 10) {
 
-    # M10: Ornstein-Uhlenbeck and quadratic deviation III as in G-P, F-B and G-M (2014)
+    # S10: Ornstein-Uhlenbeck and quadratic deviation III as in G-P, F-B and G-M (2014)
     X.fdata <- r.ou(n = n, t = t, alpha = 1/3, sigma = 1)
     beta0 <- fda.usc::fdata(mdata = t + cos(2 * pi * t), argvals = t)
 
@@ -147,7 +147,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 11) {
 
-    # M11: geometrical brownian motion I
+    # S11: geometrical brownian motion I
     X.fdata <- r.gbm(n = n, t = t, s0 = 1)
     beta0 <- fda.usc::fdata(log(15 * t^2 + 10) + cos(4 * pi * t), argvals = t)
 
@@ -156,7 +156,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 12) {
 
-    # M12: geometrical brownian motion II
+    # S12: geometrical brownian motion II
     X.fdata <- r.gbm(n = n, t = t, s0 = 2)
     beta0 <- fda.usc::fdata(pi^2 * (t^2 - 1/3), argvals = t)
 
@@ -165,7 +165,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 13) {
 
-    # Toy example (Edu)
+    # Toy example (Eduardo)
     X.fdata <- r.ou(n = n, t = t)
     for (i in 1:n) {
 
@@ -182,7 +182,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 
   } else if (scenario == 14) {
 
-    # Toy example (Manolo)
+    # Toy example (Manuel)
     X.fdata <- fda.usc::rproc2fdata(n = n, t = t, sigma = "vexponential")
     b5 <- fda::create.bspline.basis(rangeval = range(t), nbasis = 5)
     b5 <- fda.usc::fdata(t(fda::eval.basis(b5, t)), t)
@@ -223,7 +223,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 #' @param type kind of deviation, an index from \code{1} to \code{5}.
 #' @inheritParams r.mod
 #' @param eta functional parameter employed when \code{type = 4}.
-#' @return A vector of length \code{length(X.fdata)} containing the \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
+#' @return A vector of length \code{length(X.fdata)} containing \eqn{\delta m(\mathcal{X})}{\delta m(X)}.
 #' @details The description of the deviations is detailed in the supplementary material of Cuesta-Albertos et al. (2017).
 #' @examples
 #' dev <- list()
