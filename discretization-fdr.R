@@ -32,46 +32,47 @@ ci <- function(p, M) {
   
 }
 
-# Size as a function of K
-M <- 1e3
-K <- 1:50
-mK <- max(K)
-positiveCorrection <- FALSE
-av.fdr.pval <- function(b, seed = 12453252) {
-
-  # A sample of p-vals with precision 1/b
-  set.seed(seed)
-  samp <- matrix((sample(x = b + 1, size = mK * M, replace = TRUE) - 1) + 
-                   positiveCorrection, nrow = M, ncol = mK) / (b + positiveCorrection)
-
-  # Extract p-values
-  pvals <- sapply(K, function(k) {
-    apply(samp[, 1:k, drop = FALSE], 1, function(x) min(sort(x) / (1:k)) * k)
-  })
-
-  # Power
-  apply(pvals, 2, function(x) c(mean(x < 0.10), mean(x < 0.05), mean(x < 0.01)))
-
-}
-A <- vector("list", 5)
-i <- 1
-for (b in c(5e2, 1e3, 5e3, 1e4, 5e4)) {
-
-  for (j in 1:5) {
-
-    A[[i]][[j]] <- t(av.fdr.pval(b = b, seed = 202345 + j * 123))
-
-  }
-  cat(i, "\n")
-  i <- i + 1
-
-}
-
+# # Size as a function of K
+# M <- 1e3
+# K <- 1:50
+# mK <- max(K)
+# positiveCorrection <- FALSE
+# av.fdr.pval <- function(b, seed = 12453252) {
+# 
+#   # A sample of p-vals with precision 1/b
+#   set.seed(seed)
+#   samp <- matrix((sample(x = b + 1, size = mK * M, replace = TRUE) - 1) + 
+#                    positiveCorrection, nrow = M, ncol = mK) / (b + positiveCorrection)
+# 
+#   # Extract p-values
+#   pvals <- sapply(K, function(k) {
+#     apply(samp[, 1:k, drop = FALSE], 1, function(x) min(sort(x) / (1:k)) * k)
+#   })
+# 
+#   # Power
+#   apply(pvals, 2, function(x) c(mean(x < 0.10), mean(x < 0.05), mean(x < 0.01)))
+# 
+# }
+# A <- vector("list", 5)
+# i <- 1
+# for (b in c(5e2, 1e3, 5e3, 1e4, 5e4)) {
+# 
+#   for (j in 1:5) {
+# 
+#     A[[i]][[j]] <- t(av.fdr.pval(b = b, seed = 202345 + j * 123))
+# 
+#   }
+#   cat(i, "\n")
+#   i <- i + 1
+# 
+# }
+ 
 # Matplot: 5 trajectories of the empirical size of the FDR (indexed by the number 
 # of p-values) with respect to different p-value discretizations
 library(viridis)
 cols <- rev(viridis(6))
-#load("discretization-fdr.RData")
+load("discretization-fdr.RData")
+#load("discretization-fdr-positiveCorrection.RData")
 matplot(A[[1]][[1]], type = "l", ylim = c(0, 0.2), lty = 1, 
         pch = 1, cex = 0.5, col = cols[1], xlab = "Number of p-values", 
         ylab = "Empirical size for FDR p-value", cex.main = 0.95)
