@@ -81,29 +81,19 @@ beta0 <- fdata(mdata = cos(2 * pi * t) - (t - 0.5)^2, argvals = t,
 Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 
 # Test all cases
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", B = 1000)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc")
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls")
 rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
-            p.criterion = fda.usc::GCV.S, B = 1000)
-
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5, B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5, B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
-
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000)
-
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 1, B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 1, B = 1000)
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5, B = 1000)
+            p.criterion = fda.usc::GCV.S)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5)
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0)
 \dontrun{
 # Composite hypothesis: do not reject FLM
-set.seed(23456789)
-projs <- rdir.pc(n = 5, X.fdata = X, zero.mean = FALSE)
-rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, projs = projs)
+rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc")
 rp.test$p.values.fdr
-rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000, n.proj = 5)
-rp.test$p.values.fdr
-pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1000,
+pcvm.test <- flm.test(X.fdata = X, Y = Y, est.method = "pc", B = 1e3,
                       plot.it = FALSE)
 pcvm.test
 
@@ -117,12 +107,12 @@ plot(density(Y), main = "Density of Y", xlab = "Y", ylab = "Density")
 rug(Y)
 
 # Simple hypothesis: do not reject beta = beta0
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000)
-flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1000, plot.it = FALSE)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0)$p.values.fdr
+flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1e3, plot.it = FALSE)
 
 # Simple hypothesis: reject beta = beta0^2
-rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1000)
-flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1000, plot.it = FALSE)
+rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2)$p.values.fdr
+flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1e3, plot.it = FALSE)
 
 # AEMET dataset
 
@@ -142,29 +132,21 @@ lines(aemet$temp[l], col = 3)
 wind.speed <- wind.speed[-l]
 temp <- temp[-l]
 
-# Exploratory analysis: do not reject the FLM
-rp.aemet <- rp.flm.test(X.fdata = temp, Y = wind.speed, B = 1000,
-                        est.method = "pc")
-pcvm.aemet <- flm.test(X.fdata = temp, Y = wind.speed, B = 1000,
+# Composite hypothesis
+set.seed(3456789)
+rp.aemet <- rp.flm.test(X.fdata = temp, Y = wind.speed, est.method = "pc")
+pcvm.aemet <- flm.test(X.fdata = temp, Y = wind.speed, B = 1e3,
                        est.method = "pc", plot.it = FALSE)
-rp.aemet
+rp.aemet$p.values.fdr
+apply(rp.aemet$p.values.fdr, 2, range)
 pcvm.aemet
 
-# Estimated betas
-plot(rp.aemet$beta.est, col = 2)
-lines(pcvm.aemet$beta.est, col = 3)
-
-# B = 5000 for more precision on the calibration: do not reject the FLM
-rp.flm.test(X.fdata = temp, Y = wind.speed, B = 5000, est.method = "pc")
-flm.test(X.fdata = temp, Y = wind.speed, B = 5000, est.method = "pc",
-         plot.it = FALSE)
-
-# Simple hypothesis: rejection of beta0 = 0
+# Simple hypothesis
 zero <- fdata(mdata = rep(0, length(temp$argvals)), argvals = temp$argvals,
               rangeval = temp$rangeval)
-flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero, B = 1000,
+flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero, B = 1e3,
          plot.it = FALSE)
-rp.flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero, B = 1000)
+rp.flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero)
 
 # Tecator dataset
 
@@ -175,36 +157,25 @@ ind <- 1:129 # or ind <- 1:215
 x <- absorp[ind, ]
 y <- tecator$y$Fat[ind]
 
-# Exploratory analysis for composite hypothesis with automatic choose of p
-rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc", B = 5000)
-pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 5000,
+# Composite hypothesis
+set.seed(3456789)
+rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc")
+pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1e3,
                        plot.it = FALSE)
-rp.tecat
+rp.tecat$p.values.fdr[c(5, 10), ]
 pcvm.tecat
 
-# Distribution of the CvM and KS p-values
-hist(rp.tecat$proj.p.values[, 1], lwd = 2, breaks = seq(0, 1, l = 20),
-     freq = FALSE, main = "CvM and KS projected p-values")
-rug(rp.tecat$proj.p.values)
-
-# Distribution of the PCvM statistic
-plot(density(pcvm.tecat$boot.statistics), lwd = 2, main = "PCvM distribution",
-     xlab = "PCvM*", ylab = "Density under the null")
-rug(pcvm.tecat$boot.statistics)
-abline(v = pcvm.tecat$statistic, col = 2, lwd = 2)
-legend("topright", legend = "PCvM observed", lwd = 2, col = 2)
-
-# Simple hypothesis: fixed p
+# Simple hypothesis
 zero <- fdata(mdata = rep(0, length(x$argvals)), argvals = x$argvals,
               rangeval = x$rangeval)
+rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero)
+flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1e3)
 
-# Fixed p
-rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000, p = 11)
-flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000, p = 11)
-
-# Simple hypothesis, automatic election of p
-rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000)
-flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1000)
+# With derivatives
+rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 1), Y = y, est.method = "pc")
+rp.tecat$p.values.fdr
+rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 2), Y = y, est.method = "pc")
+rp.tecat$p.values.fdr
 }
 }
 \author{

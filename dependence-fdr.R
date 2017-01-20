@@ -6,7 +6,6 @@ library(fda.usc)
 library(viridis)
 library(rgl)
 
-
 ## Dependence creates underrejection in FDR 
 
 # Data from a Gaussian copula
