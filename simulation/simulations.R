@@ -1,7 +1,4 @@
 
-# Install from GitHub - auth token should work for anyone
-# devtools::install_github("egarpor/rp.flm.test", username = NULL, ref = "master", subdir = NULL, auth_token = "5d85d98bdd4ad74f3897192760c4bb20e311173e", host = "api.github.com")
-
 # Load packages
 library(fda.usc)
 library(rp.flm.test)
@@ -138,16 +135,13 @@ time <- system.time(eg <- evalGrids(
   cluster = cl,
   clusterLibraries = c("fda.usc", "rp.flm.test"),
   clusterGlobalObjects = c("B"),
-  fallback = "simus.proj.full.comp.dep095.sd1.b1e3.m1e3.s",
+  fallback = "simus.dep095.sd1.b1e3.m1e3.s",
   clusterSeed = rep(12345678, 6)
 
 ))
 
 # Stop cluster
 stopCluster(cl)
-
-# Alert by email
-system(paste("echo 'Sent from R. Time: ", time[3], " secs. Check output attached.' | mutt -s 'Simulations FLM finished!' -- edugarpor@gmail.com", sep = ""))
 
 }
 
@@ -159,20 +153,13 @@ if (!run.simulations) {
 
 ## Read results
 
-# Set wd
-setwd("~/Dropbox/10 Linear model/New code")
-
 # Load brute data composite hypothesis
-load("simus.proj.full.comp.dep095.sd0.b1e4.m1e3.s.Rdata")
-load("simus.proj.full.comp.dep095.sd0.b1e3.m1e3.s.Rdata")
-#load("simus.proj.full.comp.dep095.sd1.b1e4.m1e3.s.Rdata")
-#load("simus.proj.full.comp.dep095.sd1.b1e3.m1e3.s.Rdata")
-#load("simus.proj.full.comp.indep.b1e4.m1e3.s.Rdata")
-#load("simus.proj.full.comp.indep.b1e3.m1e3.s.Rdata")
-
-# Load brute data simple hypothesis
-load("simus.proj.full.simp.dep095.sd0.b1e4.m1e3.s.Rdata")
-load("simus.proj.full.simp.dep095.sd0.b1e3.m1e3.s.Rdata")
+load("simus.dep095.sd0.b1e4.m1e3.s.Rdata")
+load("simus.dep095.sd0.b1e3.m1e3.s.Rdata")
+#load("simus.dep095.sd1.b1e4.m1e3.s.Rdata")
+#load("simus.dep095.sd1.b1e3.m1e3.s.Rdata")
+#load("simus.indep.b1e4.m1e3.s.Rdata")
+#load("simus.indep.b1e3.m1e3.s.Rdata")
 
 eg <- fallBackObj
 
