@@ -38,11 +38,11 @@ Nothing. The functions are called for producing diagnostic plots.
 \dontrun{
 # Check scenarios and deviations
 set.seed(3257641)
-check.scenarios(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), composite = TRUE)
+check.scenarios(scenarios = c(1, 7, 3, 5, 6, 4, 8, 9, 12), composite = TRUE)
 
 # Check betas
 set.seed(3257641)
-check.betas(scenarios = c(1, 5, 6, 7, 3, 4, 8, 9, 12), n = 100)
+check.betas(scenarios = c(1, 7, 3, 5, 6, 4, 8, 9, 12), n = 100)
 }
 }
 \author{
