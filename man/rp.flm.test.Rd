@@ -114,6 +114,35 @@ flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0, B = 1e3, plot.it = FALSE)
 rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2)$p.values.fdr
 flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0^2, B = 1e3, plot.it = FALSE)
 
+# Tecator dataset
+
+# Load data
+data(tecator)
+absorp <- tecator$absorp.fdata
+ind <- 1:129 # or ind <- 1:215
+x <- absorp[ind, ]
+y <- tecator$y$Fat[ind]
+
+# Composite hypothesis
+set.seed(3456789)
+rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc")
+pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1e3,
+                       plot.it = FALSE)
+rp.tecat$p.values.fdr[c(5, 10), ]
+pcvm.tecat
+
+# Simple hypothesis
+zero <- fdata(mdata = rep(0, length(x$argvals)), argvals = x$argvals,
+              rangeval = x$rangeval)
+rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero)
+flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1e3)
+
+# With derivatives
+rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 1), Y = y, est.method = "pc")
+rp.tecat$p.values.fdr
+rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 2), Y = y, est.method = "pc")
+rp.tecat$p.values.fdr
+
 # AEMET dataset
 
 # Load data
@@ -147,35 +176,6 @@ zero <- fdata(mdata = rep(0, length(temp$argvals)), argvals = temp$argvals,
 flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero, B = 1e3,
          plot.it = FALSE)
 rp.flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero)
-
-# Tecator dataset
-
-# Load data
-data(tecator)
-absorp <- tecator$absorp.fdata
-ind <- 1:129 # or ind <- 1:215
-x <- absorp[ind, ]
-y <- tecator$y$Fat[ind]
-
-# Composite hypothesis
-set.seed(3456789)
-rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc")
-pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1e3,
-                       plot.it = FALSE)
-rp.tecat$p.values.fdr[c(5, 10), ]
-pcvm.tecat
-
-# Simple hypothesis
-zero <- fdata(mdata = rep(0, length(x$argvals)), argvals = x$argvals,
-              rangeval = x$rangeval)
-rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero)
-flm.test(X.fdata = x, Y = y, beta0.fdata = zero, B = 1e3)
-
-# With derivatives
-rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 1), Y = y, est.method = "pc")
-rp.tecat$p.values.fdr
-rp.tecat <- rp.flm.test(X.fdata = fdata.deriv(x, 2), Y = y, est.method = "pc")
-rp.tecat$p.values.fdr
 }
 }
 \author{
