@@ -3,7 +3,7 @@
 [![Travis-CI Build Status](https://travis-ci.org/egarpor/rp.flm.test.svg?branch=master)](https://travis-ci.org/egarpor/rp.flm.test)
 [![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-## Basic overview
+## Overview
 
 Package companion for the paper *Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes* (Cuesta-Albertos *et al.*, 2017). It implements the proposed tests and allows to replicate the empirical results presented.
 
@@ -91,6 +91,7 @@ apply(rp.aemet$p.values.fdr, 2, range)
 
 ## References
 
+Cuesta-Albertos, J. A., García-Portugués, E., Febrero-Bande, M. and González-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. *[arXiv:1701.XXXXX](https://arxiv.org/abs/1701.XXXXX)*
+
 Febrero-Bande, M. and Oviedo de la Fuente, M. (2012). Statistical Computing in Functional Data Analysis: The R Package fda.usc. *Journal of Statistical Software*, 51(4), 1-28. <http://www.jstatsoft.org/v51/i04/>
 
-Cuesta-Albertos, J. A., García-Portugués, E., Febrero-Bande, M. and González-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. *[arXiv:1701.XXXXX](https://arxiv.org/abs/1701.XXXXX)*
