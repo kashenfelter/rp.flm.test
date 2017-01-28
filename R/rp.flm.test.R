@@ -328,12 +328,12 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @return An object with class \code{"htest"} whose underlying structure is a list containing the following components:
 #' \describe{
 #'   \item{\code{p.values.fdr}}{a matrix of size \code{c(n.proj, 2)}, containing in each row the FDR p-values of the CvM and KS tests up to that projection.}
-#'   \item{\code{proj.statistics}}{a matrix of size \code{c(n.proj, 2)} with the value of the test statistic on each projection.}
-#'   \item{\code{boot.proj.statistics}}{an array of size \code{c(n.proj, 2, B)} with the values of the bootstrap test statistics for each projection.}
-#'   \item{\code{proj.p.values}}{a matrix of size \code{c(n.proj, 2)}}
+#'   \item{\code{proj.statistics}}{a matrix of size \code{c(max(n.proj), 2)} with the value of the test statistic on each projection.}
+#'   \item{\code{boot.proj.statistics}}{an array of size \code{c(max(n.proj), 2, B)} with the values of the bootstrap test statistics for each projection.}
+#'   \item{\code{proj.p.values}}{a matrix of size \code{c(max(n.proj), 2)}}
 #'   \item{\code{method}}{information about the test performed and the kind of estimation performed.}
 #'   \item{\code{B}}{number of bootstrap replicates used.}
-#'   \item{\code{n.proj}}{number of projections considered.}
+#'   \item{\code{n.proj}}{number of projections specified}
 #'   \item{\code{projs}}{random directions employed to project \code{X.fdata}.}
 #'   \item{\code{type.basis}}{type of basis for \code{est.method = "basis"}.}
 #'   \item{\code{beta.est}}{estimated functional parameter \eqn{\hat \beta}{\hat \beta} in the composite hypothesis. For the simple hypothesis, \code{beta0.fdata}.}
@@ -398,7 +398,6 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' y <- tecator$y$Fat[ind]
 #'
 #' # Composite hypothesis
-#' set.seed(3456789)
 #' rp.tecat <- rp.flm.test(X.fdata = x, Y = y, est.method = "pc")
 #' pcvm.tecat <- flm.test(X.fdata = x, Y = y, est.method = "pc", B = 1e3,
 #'                        plot.it = FALSE)
@@ -436,7 +435,6 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' temp <- temp[-l]
 #'
 #' # Composite hypothesis
-#' set.seed(3456789)
 #' rp.aemet <- rp.flm.test(X.fdata = temp, Y = wind.speed, est.method = "pc")
 #' pcvm.aemet <- flm.test(X.fdata = temp, Y = wind.speed, B = 1e3,
 #'                        est.method = "pc", plot.it = FALSE)
@@ -799,7 +797,10 @@ rp.flm.test <- function(X.fdata, Y, beta0.fdata = NULL, B = 1000, n.proj = 10,
     
   }
   options(warn = -1)
-  result <- structure(list(statistics.mean = colMeans(rp.stat$statistic),
+  mean.stats <- colMeans(rp.stat$statistic)
+  names(mean.stats) <- paste("Mean", names(mean.stats))
+  
+  result <- structure(list(statistics.mean = mean.stats,
                            p.values.fdr = rp.pvalue,
                            proj.statistics = rp.stat$statistic,
                            boot.proj.statistics = rp.stat.star,

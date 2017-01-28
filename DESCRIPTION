@@ -1,7 +1,7 @@
 Package: rp.flm.test
 Type: Package
 Title: Goodness-of-fit test for the functional linear model with scalar response based on random projections
-Version: 0.0.1.
+Version: 0.0.1
 Date: 2017-01-10
 Authors@R: c(person("Eduardo", "Garcia-Portugues", role = c("aut", "cre"),
 		     email = "edgarcia@est-econ.uc3m.es"), person("Manuel", "Febrero-Bande", role = "aut", email = "manuel.febrero@usc.es"))
