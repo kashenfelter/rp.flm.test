@@ -96,7 +96,7 @@ The directory [`/simulations`](https://github.com/egarpor/rp.flm.test/tree/maste
 
 ## References
 
-Cuesta-Albertos, J. A., García-Portugués, E., Febrero-Bande, M. and González-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. *arXiv:1701.XXXXX.* <https://arxiv.org/abs/1701.XXXXX>
+Cuesta-Albertos, J. A., García-Portugués, E., Febrero-Bande, M. and González-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. *arXiv:1701.XXXXX*. <https://arxiv.org/abs/1701.XXXXX>
 
 Febrero-Bande, M. and Oviedo de la Fuente, M. (2012). Statistical Computing in Functional Data Analysis: The R Package fda.usc. *Journal of Statistical Software*, 51(4), 1-28. <http://www.jstatsoft.org/v51/i04/>
 
