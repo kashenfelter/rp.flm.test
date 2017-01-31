@@ -344,7 +344,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' @details
 #' No NA's are allowed neither in the functional covariate nor in the scalar response.
 #' @examples
-#' # Simulated example
+#' #' # Simulated example
 #'
 #' set.seed(345678)
 #' t <- seq(0, 1, l = 101)
@@ -356,6 +356,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #'
 #' # Test all cases
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pc")
+#' \dontrun{
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls")
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
 #'             p.criterion = fda.usc::GCV.S)
@@ -363,7 +364,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5)
 #' rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", p = 5)
 #' rp.flm.test(X.fdata = X, Y = Y, beta0.fdata = beta0)
-#' \dontrun{
+#' 
 #' # Composite hypothesis: do not reject FLM
 #' rp.test <- rp.flm.test(X.fdata = X, Y = Y, est.method = "pc")
 #' rp.test$p.values.fdr
