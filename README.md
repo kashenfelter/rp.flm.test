@@ -10,7 +10,7 @@ Package companion for the paper *Goodness-of-fit tests for the functional linear
 
 ## Install
 
-```
+```r
 library(devtools)
 install_github("egarpor/rp.flm.test")
 ```
@@ -20,7 +20,7 @@ Alternatively, see function `rp.flm.test` in the [`fda.usc`](http://cran.r-proje
 ## Usage
 
 ### Simulated data
-```
+```r
 # Generate data
 set.seed(345678)
 t <- seq(0, 1, l = 101)
@@ -48,7 +48,7 @@ lines(rp.test2$beta.est, col = 2)
 ```
 
 ### Tecator dataset
-```
+```r
 # Load data
 data(tecator)
 absorp <- tecator$absorp.fdata
@@ -67,7 +67,7 @@ rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero)$p.values.fdr
 ```
 
 ### AEMET dataset
-```
+```r
 # Load data
 data(aemet)
 wind.speed <- apply(aemet$wind.speed$data, 1, mean)
