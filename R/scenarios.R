@@ -31,7 +31,7 @@
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv:1701.08363. \url{https://arxiv.org/abs/1701.08363}
 #' @export
 r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
                   composite = TRUE) {
@@ -238,7 +238,7 @@ r.mod <- function(n, scenario, delta = 0, t = seq(0, 1, l = 201), R2 = 0.95,
 #' }
 #' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}).
 #' @references
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv:1701.08363. \url{https://arxiv.org/abs/1701.08363}
 #' @export
 m.dev <- function(X.fdata, type, delta, eta, composite = TRUE) {
 

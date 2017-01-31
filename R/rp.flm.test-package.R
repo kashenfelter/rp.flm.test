@@ -10,6 +10,6 @@
 #' @import fda fda.usc
 #' @useDynLib rp.flm.test
 #' @references 
-#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv 1701:XXXX. \url{https://arxiv.org/abs/1701.XXXX}
+#' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv:1701.08363. \url{https://arxiv.org/abs/1701.08363}
 NULL
 
