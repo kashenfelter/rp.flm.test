@@ -39,7 +39,7 @@ Alternatively, see function `rp.flm.test` in the [`fda.usc`](http://cran.r-proje
 
 ### Simulated data
 
-```{r, simulated, message=FALSE, fig.asp=1, fig.align='center'}
+```{r, simulated, message=FALSE, warning=FALSE, fig.asp=1, fig.align='center'}
 # Load package
 library(rp.flm.test)
 
@@ -71,7 +71,7 @@ lines(rp.test2$beta.est, col = 2)
 
 ### Tecator dataset
 
-```{r, tecator, message=FALSE, fig.asp=1, fig.align='center'}
+```{r, tecator, message=FALSE, warning=FALSE, fig.asp=1, fig.align='center'}
 # Load package
 library(rp.flm.test)
 
@@ -94,7 +94,7 @@ rp.flm.test(X.fdata = x, Y = y, beta0.fdata = zero, verbose = FALSE)$p.values.fd
 
 ### AEMET dataset
 
-```{r, aemet, message=FALSE, fig.asp=1, fig.align='center'}
+```{r, aemet, message=FALSE, warning=FALSE, fig.asp=1, fig.align='center'}
 # Load package
 library(rp.flm.test)
 

@@ -28,9 +28,6 @@ Usage
 ``` r
 # Load package
 library(rp.flm.test)
-#> Warning: package 'Matrix' was built under R version 3.2.5
-#> Warning: package 'mgcv' was built under R version 3.2.5
-#> Warning: package 'nlme' was built under R version 3.2.5
 
 # Generate data
 set.seed(345678)
