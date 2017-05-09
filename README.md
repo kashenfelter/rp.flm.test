@@ -150,7 +150,7 @@ apply(rp.aemet$p.values.fdr, 2, range)
 Reproducibility of Cuesta-Albertos *et al.* (2017)
 --------------------------------------------------
 
-The directory [`/simulation`](https://github.com/egarpor/rp.flm.test/tree/master/simulation) contains the scripts used in the simulation study of the aforementioned paper, as well as their `.RData` outputs. Note that the size of `/simulation` is 916 Mb and that is not downloaded when installing `rp.flm.test`.
+The directory [`/simulation`](https://github.com/egarpor/rp.flm.test/tree/master/simulation) contains the scripts used in the simulation study of the aforementioned paper, as well as their `.RData` outputs. Note that the size of `/simulation` is 916 Mb and those files are not downloaded when installing `rp.flm.test`.
 
 References
 ----------
