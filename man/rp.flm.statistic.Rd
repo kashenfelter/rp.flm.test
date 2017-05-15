@@ -18,7 +18,7 @@ rp.flm.statistic(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE)
 \value{
 A list containing:
 \describe{
-  \item{\code{statistic}}{a matrix of size \code{c(n.proj, 2)} with the the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
+  \item{\code{statistic}}{a matrix of size \code{c(n.proj, 2)} with the CvM (first column) and KS (second) statistics, for the \code{n.proj} different projections.}
   \item{\code{proj.X.ord}}{the computed row permutations of \code{proj.X}, useful for recycling in subsequent calls to \code{rp.flm.statistic} with the same projections but different residuals.}
 }
 }
@@ -66,12 +66,12 @@ apply(proj.X12, 2, sort)
 
 # FORTRAN and R code
 rp.flm.statistic(proj.X = proj.X1, residuals = mod$residuals)$statistic -
-rp.flm.statistic(proj.X = proj.X1, residuals = mod$residuals, 
+rp.flm.statistic(proj.X = proj.X1, residuals = mod$residuals,
                  F.code = FALSE)$statistic
 
 # Matrix and vector residuals
 rp.flm.statistic(proj.X = proj.X12, residuals = mod$residuals)$statistic
-rp.flm.statistic(proj.X = proj.X12, 
+rp.flm.statistic(proj.X = proj.X12,
                  residuals = rbind(mod$residuals, mod$residuals * 2))$statistic
 }
 \author{

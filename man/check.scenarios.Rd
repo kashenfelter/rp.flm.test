@@ -18,7 +18,7 @@ check.betas(scenarios = 1:12, n = 100, R2 = 0.95, times = TRUE,
 
 \item{times}{flag to indicate whether to show the time employed computing each model.}
 
-\item{R2}{proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.}
+\item{R2}{proportion of variance of the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.}
 
 \item{M}{number of samples employed to estimate the densities of the response.}
 

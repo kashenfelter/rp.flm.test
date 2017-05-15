@@ -84,7 +84,7 @@ Y <- inprod.fdata(X, beta0) + rnorm(n, sd = 0.1)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc")
 \dontrun{
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls")
-rp.flm.test(X.fdata = X, Y = Y, est.method = "basis", 
+rp.flm.test(X.fdata = X, Y = Y, est.method = "basis",
             p.criterion = fda.usc::GCV.S)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pc", p = 5)
 rp.flm.test(X.fdata = X, Y = Y, est.method = "pls", p = 5)

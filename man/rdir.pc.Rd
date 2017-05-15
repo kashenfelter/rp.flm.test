@@ -34,7 +34,7 @@ with \eqn{h_j\sim\mathcal{N}(0, \sigma_j^2)}{h_j~N(0, \sigma_j^2)}, \eqn{j=1,\ld
 \examples{
 # Simulate some data
 set.seed(345673)
-X.fdata <- r.ou(n = 200, mu = 0, alpha = 1, sigma = 2, t = seq(0, 1, l = 201), 
+X.fdata <- r.ou(n = 200, mu = 0, alpha = 1, sigma = 2, t = seq(0, 1, l = 201),
                 x0 = rep(0, 200))
 pc <- fdata2pc(X.fdata, ncomp = 20)
 
@@ -60,15 +60,15 @@ par(mfrow = c(1, 2))
 plot(X.fdata, col = gray(0.85), lty = 1)
 lines(samp1[1:10], col = 2, lty = 1)
 lines(samp2[1:10], col = 4, lty = 1)
-legend("topleft", legend = c("Data", "Different variances", "Equal variances"), 
+legend("topleft", legend = c("Data", "Different variances", "Equal variances"),
        col = c(gray(0.85), 2, 4), lwd = 2)
 plot(X.fdata, col = gray(0.85), lty = 1)
 lines(samp3[1:10], col = 5, lty = 1)
 lines(samp4[1:10], col = 6, lty = 1)
-legend("topleft", legend = c("Data", "Different variances, normalized", 
+legend("topleft", legend = c("Data", "Different variances, normalized",
        "Equal variances, normalized"), col = c(gray(0.85), 5:6), lwd = 2)
 
-# Correlations (stronger with different variances and unnormalized; 
+# Correlations (stronger with different variances and unnormalized;
 # stronger with lower ncomp)
 ind <- lower.tri(matrix(nrow = n.proj, ncol = n.proj))
 median(abs(cor(sapply(1:n.proj, function(i) inprod.fdata(X.fdata, samp1[i]))))[ind])

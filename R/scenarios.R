@@ -8,7 +8,7 @@
 #' @param t time locations for the functional data.
 #' @param scenario an index from \code{1} to \code{12} denoting the simulation scenario.
 #' @param delta an index from \code{0} to \code{3} denoting the degree of departure of the data from the null hypothesis of functional linearity, encoded with \code{0}.
-#' @param R2 proportion of variance of the the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.
+#' @param R2 proportion of variance of the response \eqn{Y}{Y} explained by the linear model when \code{delta = 0}. This is used to compute the variance of the error \eqn{\varepsilon}{\epsilon} of the regression model.
 #' @param composite flag to indicate the generation of data according to a functional linear model with non-null coefficient (\code{TRUE}) or with a null coefficient (\code{FALSE}).
 #' @return A list with the following elements:
 #' \describe{
