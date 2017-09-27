@@ -26,6 +26,5 @@ plot(r.gbm(n = 10, s0 = 1))
 plot(r.gbm(n = 10, mu = -1, s0 = rnorm(10, mean = 10)))
 }
 \author{
-Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+Eduardo García-Portugués (\email{edgarcia@est-econ.uc3m.es}).
 }
-

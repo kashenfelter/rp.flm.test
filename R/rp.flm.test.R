@@ -94,7 +94,7 @@
 #' plot(samp4, col = cols[4], lty = 1, main = "Threshold = 0.99")
 #' plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 #' }
-#' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
+#' @author Eduardo García-Portugués (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @export
 rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj =
                       fda.usc::fdata2pc(X.fdata, ncomp = min(length(X.fdata$argvals),
@@ -230,10 +230,10 @@ rdir.pc <- function(n, X.fdata, ncomp = 0.95, fdata2pc.obj =
 #' rp.flm.statistic(proj.X = proj.X12, residuals = mod$residuals)$statistic
 #' rp.flm.statistic(proj.X = proj.X12,
 #'                  residuals = rbind(mod$residuals, mod$residuals * 2))$statistic
-#' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
+#' @author Eduardo García-Portugués (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv:1701.08363. \url{https://arxiv.org/abs/1701.08363}
-#' @useDynLib rp.flm.test
+#' @useDynLib rp.flm.test, .registration = TRUE
 #' @export
 rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE) {
 
@@ -450,7 +450,7 @@ rp.flm.statistic <- function(proj.X, residuals, proj.X.ord = NULL, F.code = TRUE
 #'          plot.it = FALSE)
 #' rp.flm.test(X.fdata = temp, Y = wind.speed, beta0.fdata = zero)
 #' }
-#' @author Eduardo Garcia-Portugues (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
+#' @author Eduardo García-Portugués (\email{edgarcia@@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@@usc.es}).
 #' @references
 #' Cuesta-Albertos, J.A., Garcia-Portugues, E., Febrero-Bande, M. and Gonzalez-Manteiga, W. (2017). Goodness-of-fit tests for the functional linear model based on randomly projected empirical processes. arXiv:1701.08363. \url{https://arxiv.org/abs/1701.08363}
 #'

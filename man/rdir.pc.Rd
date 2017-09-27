@@ -113,6 +113,5 @@ plot(samp5, col = cols[5], lty = 1, main = "Threshold = 0.999")
 }
 }
 \author{
-Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@usc.es}).
+Eduardo García-Portugués (\email{edgarcia@est-econ.uc3m.es}) and Manuel Febrero-Bande (\email{manuel.febrero@usc.es}).
 }
-

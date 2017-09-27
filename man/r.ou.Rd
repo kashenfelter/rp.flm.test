@@ -31,6 +31,5 @@ plot(r.ou(n = 100))
 plot(r.ou(n = 100, alpha = 2, sigma = 4, x0 = 1:100))
 }
 \author{
-Eduardo Garcia-Portugues (\email{edgarcia@est-econ.uc3m.es}).
+Eduardo García-Portugués (\email{edgarcia@est-econ.uc3m.es}).
 }
-
